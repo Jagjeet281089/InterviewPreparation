@@ -7,6 +7,22 @@
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1e293b', // Custom dark shade for cards
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -19,7 +35,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         .animate-fade-in { animation: fadeIn 0.3s ease-out; }
@@ -27,14 +43,16 @@
         
         /* Markdown Styles for AI Response */
         .prose p { margin-bottom: 0.5em; }
-        .prose pre { background: #1e293b; color: #e2e8f0; padding: 0.75rem; border-radius: 0.5rem; overflow-x: auto; margin-top: 0.5rem; margin-bottom: 0.5rem; font-size: 0.875rem; }
-        .prose code { background: #f1f5f9; color: #0f172a; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875em; }
-        .prose pre code { background: transparent; color: inherit; padding: 0; }
+        .prose pre { padding: 0.75rem; border-radius: 0.5rem; overflow-x: auto; margin-top: 0.5rem; margin-bottom: 0.5rem; font-size: 0.875rem; }
+        .prose code { padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875em; }
+        .prose pre code { background: transparent; padding: 0; }
         .prose ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.5rem; }
         .prose ol { list-style-type: decimal; padding-left: 1.25rem; margin-bottom: 0.5rem; }
+        
+        /* Light/Dark specific markdown overrides handled by prose-invert class in tailwind */
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
     <div id="root"></div>
 
     <script type="text/babel">
@@ -52,6 +70,8 @@
         const IconBulb = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>;
         const IconSettings = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>;
         const IconClose = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>;
+        const IconMoon = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>;
+        const IconSun = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>;
 
         // --- DATA ---
         const QUESTIONS_DATA = [
@@ -170,7 +190,7 @@
 
         // --- GEMINI API HELPER ---
         const callGemini = async (prompt, userKey) => {
-            const apiKey = userKey || ""; // Fallback if not passed directly, but we usually pass it from local state
+            const apiKey = userKey || "AIzaSyD0NBzYolo5QCdfbY1P8jnaOCo_14WpKLw";
             
             if (!apiKey) {
                 throw new Error("API_KEY_MISSING");
@@ -178,7 +198,6 @@
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
-            // Exponential backoff retry logic
             const maxRetries = 3;
             const delays = [1000, 2000, 4000];
 
@@ -210,16 +229,17 @@
         // --- COMPONENTS ---
 
         const Badge = ({ children, color }) => {
+            // Updated for dark mode compatibility with readable contrast
             const colors = {
-                blue: "bg-blue-100 text-blue-800",
-                green: "bg-green-100 text-green-800",
-                yellow: "bg-yellow-100 text-yellow-800",
-                red: "bg-red-100 text-red-800",
-                purple: "bg-purple-100 text-purple-800",
-                gray: "bg-gray-100 text-gray-800"
+                blue: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200",
+                green: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200",
+                yellow: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-200",
+                red: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-200",
+                purple: "bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-200",
+                gray: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
             };
             return (
-                <span className={`px-2 py-0.5 rounded text-xs font-medium ${colors[color] || colors.gray}`}>
+                <span className={`px-2 py-0.5 rounded text-xs font-medium border border-transparent dark:border-white/10 ${colors[color] || colors.gray}`}>
                     {children}
                 </span>
             );
@@ -236,30 +256,30 @@
             };
 
             return (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 animate-fade-in">
-                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 animate-fade-in backdrop-blur-sm">
+                    <div className="bg-white dark:bg-slate-850 rounded-xl shadow-2xl w-full max-w-md p-6 border border-gray-200 dark:border-slate-700">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-bold text-gray-800">Settings</h2>
-                            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+                            <h2 className="text-xl font-bold text-gray-800 dark:text-white">Settings</h2>
+                            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
                                 <IconClose className="w-6 h-6" />
                             </button>
                         </div>
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Gemini API Key</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Gemini API Key</label>
                             <input 
                                 type="password" 
                                 value={localKey}
                                 onChange={(e) => setLocalKey(e.target.value)}
                                 placeholder="Enter your API Key..."
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
                             />
-                            <p className="text-xs text-gray-500 mt-2">
-                                Your key is stored locally in your browser. Get a key from <a href="https://aistudio.google.com/" target="_blank" className="text-blue-600 underline">Google AI Studio</a>.
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                Your key is stored locally in your browser. Get a key from <a href="https://aistudio.google.com/" target="_blank" className="text-blue-600 dark:text-blue-400 underline">Google AI Studio</a>.
                             </p>
                         </div>
                         <div className="flex justify-end gap-2">
-                            <button onClick={onClose} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Cancel</button>
-                            <button onClick={handleSave} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save</button>
+                            <button onClick={onClose} className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors">Cancel</button>
+                            <button onClick={handleSave} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-md transition-colors">Save</button>
                         </div>
                     </div>
                 </div>
@@ -269,22 +289,22 @@
         const AIResponse = ({ content, loading, error, onRetry }) => {
             if (loading) {
                 return (
-                    <div className="bg-indigo-50 rounded-lg p-4 animate-pulse flex items-center gap-3">
-                        <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-                        <span className="text-indigo-800 text-sm font-medium">Gemini is thinking...</span>
+                    <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4 animate-pulse flex items-center gap-3 border border-indigo-100 dark:border-indigo-800">
+                        <div className="w-5 h-5 border-2 border-indigo-600 dark:border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
+                        <span className="text-indigo-800 dark:text-indigo-200 text-sm font-medium">Gemini is thinking...</span>
                     </div>
                 );
             }
             if (error) {
                 return (
-                    <div className="bg-red-50 rounded-lg p-4 border border-red-100">
-                        <p className="text-red-800 text-sm mb-2">{error}</p>
+                    <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 border border-red-100 dark:border-red-800">
+                        <p className="text-red-800 dark:text-red-200 text-sm mb-2">{error}</p>
                         {error === "API_KEY_MISSING" ? (
-                            <button onClick={onRetry} className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded hover:bg-red-200 font-medium">
+                            <button onClick={onRetry} className="text-xs bg-red-100 dark:bg-red-800/40 text-red-700 dark:text-red-200 px-2 py-1 rounded hover:bg-red-200 dark:hover:bg-red-800/60 font-medium">
                                 Open Settings to Add Key
                             </button>
                         ) : (
-                            <button onClick={onRetry} className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded hover:bg-red-200 font-medium">
+                            <button onClick={onRetry} className="text-xs bg-red-100 dark:bg-red-800/40 text-red-700 dark:text-red-200 px-2 py-1 rounded hover:bg-red-200 dark:hover:bg-red-800/60 font-medium">
                                 Try Again
                             </button>
                         )}
@@ -294,17 +314,18 @@
             if (!content) return null;
 
             return (
-                <div className="bg-indigo-50 rounded-lg p-4 border border-indigo-100 animate-fade-in relative group">
+                <div className="bg-indigo-50 dark:bg-slate-800 rounded-lg p-4 border border-indigo-100 dark:border-slate-700 animate-fade-in relative group">
                     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                          <button 
                             onClick={() => navigator.clipboard.writeText(content)}
-                            className="p-1 hover:bg-indigo-200 rounded text-indigo-600"
+                            className="p-1 hover:bg-indigo-200 dark:hover:bg-slate-600 rounded text-indigo-600 dark:text-indigo-300"
                             title="Copy"
                         >
                             <IconCopy className="w-4 h-4" />
                         </button>
                     </div>
-                    <div className="prose prose-sm max-w-none text-indigo-900" dangerouslySetInnerHTML={{ __html: marked.parse(content) }} />
+                    {/* prose-invert automatically handles dark mode text colors in Tailwind prose plugin, but for CDN we style manually or rely on basic text inheritance */}
+                    <div className="prose prose-sm max-w-none text-indigo-900 dark:text-indigo-100" dangerouslySetInnerHTML={{ __html: marked.parse(content) }} />
                 </div>
             );
         };
@@ -316,8 +337,7 @@
             // Reset AI state when card closes
             useEffect(() => {
                 if (!isOpen) {
-                    // Optional: Clear AI state on close? Let's keep it cached for now if they re-open.
-                    // setAiState({ loading: false, content: null, error: null, mode: null });
+                    // Optional: keep cache
                 }
             }, [isOpen]);
 
@@ -332,7 +352,6 @@
             const triggerAI = async (mode) => {
                 if (aiState.loading) return;
                 
-                // If requesting same mode and have content, just show it (or re-generate? let's re-generate if they click again usually implies they want to, but buttons act as tabs usually. Let's act as tabs.)
                 if (aiState.mode === mode && aiState.content) return;
 
                 setAiState({ loading: true, content: null, error: null, mode });
@@ -380,7 +399,7 @@
 
             return (
                 <div 
-                    className={`bg-white rounded-lg shadow-sm border transition-all duration-200 overflow-hidden ${isOpen ? 'border-blue-200 ring-1 ring-blue-100' : 'border-gray-200 hover:shadow-md'}`}
+                    className={`bg-white dark:bg-slate-850 rounded-lg shadow-sm border transition-all duration-200 overflow-hidden ${isOpen ? 'border-blue-200 dark:border-blue-800 ring-1 ring-blue-100 dark:ring-blue-900/30' : 'border-gray-200 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600'}`}
                 >
                     <div className="p-4 cursor-pointer" onClick={onToggle}>
                         <div className="flex justify-between items-start gap-3">
@@ -388,55 +407,55 @@
                                 <div className="flex flex-wrap gap-2 mb-2">
                                     <Badge color="blue">{item.t}</Badge>
                                     <Badge color={complexityColor}>{item.c}</Badge>
-                                    <span className="text-gray-400 text-xs mt-0.5">#{item.id}</span>
+                                    <span className="text-gray-400 dark:text-slate-500 text-xs mt-0.5">#{item.id}</span>
                                 </div>
-                                <h3 className="text-gray-900 font-semibold text-lg leading-tight">
+                                <h3 className="text-gray-900 dark:text-gray-100 font-semibold text-lg leading-tight">
                                     {item.q}
                                 </h3>
                             </div>
-                            <button className="text-gray-400 hover:text-blue-500 mt-1">
+                            <button className="text-gray-400 dark:text-slate-500 hover:text-blue-500 dark:hover:text-blue-400 mt-1">
                                 {isOpen ? <IconChevronUp className="w-6 h-6" /> : <IconChevronDown className="w-6 h-6" />}
                             </button>
                         </div>
                     </div>
 
                     {isOpen && (
-                        <div className="px-4 pb-4 animate-fade-in border-t border-gray-100 bg-gray-50/30">
+                        <div className="px-4 pb-4 animate-fade-in border-t border-gray-100 dark:border-slate-700 bg-gray-50/30 dark:bg-slate-900/50">
                             <div className="pt-3 space-y-4">
                                 <div>
-                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Answer</p>
-                                    <p className="text-gray-800 font-medium">{item.a}</p>
+                                    <p className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide mb-1">Answer</p>
+                                    <p className="text-gray-800 dark:text-gray-200 font-medium">{item.a}</p>
                                 </div>
                                 <div>
-                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Explanation</p>
-                                    <p className="text-gray-600 text-sm leading-relaxed">{item.e}</p>
+                                    <p className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide mb-1">Explanation</p>
+                                    <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{item.e}</p>
                                 </div>
 
                                 {/* AI TOOLBAR */}
-                                <div className="mt-4 pt-3 border-t border-gray-200">
+                                <div className="mt-4 pt-3 border-t border-gray-200 dark:border-slate-700">
                                     <div className="flex items-center gap-2 mb-3">
-                                        <IconSparkles className="w-4 h-4 text-indigo-500" />
-                                        <h4 className="text-xs font-bold text-indigo-600 uppercase tracking-wide">Gemini AI Tutor</h4>
+                                        <IconSparkles className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+                                        <h4 className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">Gemini AI Tutor</h4>
                                     </div>
                                     
                                     <div className="flex flex-wrap gap-2 mb-3">
                                         <button 
                                             onClick={(e) => { e.stopPropagation(); triggerAI('simplify'); }}
-                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${aiState.mode === 'simplify' ? 'bg-indigo-100 text-indigo-700 ring-1 ring-indigo-200' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-indigo-600'}`}
+                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${aiState.mode === 'simplify' ? 'bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-200 ring-1 ring-indigo-200 dark:ring-indigo-700' : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-300'}`}
                                         >
                                             <IconBulb className="w-3.5 h-3.5" />
                                             Simplify (ELI5) ✨
                                         </button>
                                         <button 
                                             onClick={(e) => { e.stopPropagation(); triggerAI('code'); }}
-                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${aiState.mode === 'code' ? 'bg-indigo-100 text-indigo-700 ring-1 ring-indigo-200' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-indigo-600'}`}
+                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${aiState.mode === 'code' ? 'bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-200 ring-1 ring-indigo-200 dark:ring-indigo-700' : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-300'}`}
                                         >
                                             <IconCode className="w-3.5 h-3.5" />
                                             Code Example ✨
                                         </button>
                                         <button 
                                             onClick={(e) => { e.stopPropagation(); triggerAI('analogy'); }}
-                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${aiState.mode === 'analogy' ? 'bg-indigo-100 text-indigo-700 ring-1 ring-indigo-200' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-indigo-600'}`}
+                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${aiState.mode === 'analogy' ? 'bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-200 ring-1 ring-indigo-200 dark:ring-indigo-700' : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-300'}`}
                                         >
                                             <span className="text-sm">💡</span>
                                             Analogy ✨
@@ -456,7 +475,7 @@
                                 <div className="flex justify-end pt-2">
                                     <button 
                                         onClick={handleCopy}
-                                        className={`flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors ${copied ? 'text-green-600 bg-green-50' : 'text-gray-400 hover:bg-gray-200 hover:text-gray-600'}`}
+                                        className={`flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors ${copied ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20' : 'text-gray-400 dark:text-slate-500 hover:bg-gray-200 dark:hover:bg-slate-700 hover:text-gray-600 dark:hover:text-slate-300'}`}
                                     >
                                         {copied ? <IconCheck className="w-3 h-3"/> : <IconCopy className="w-3 h-3"/>}
                                         {copied ? "Copied" : "Copy Q&A"}
@@ -476,6 +495,26 @@
             const [openId, setOpenId] = useState(null);
             const [showSettings, setShowSettings] = useState(false);
             const [apiKey, setApiKey] = useState(() => localStorage.getItem("gemini_api_key") || "");
+            
+            // Dark Mode State
+            const [darkMode, setDarkMode] = useState(() => {
+                if (localStorage.getItem("theme") === "dark") return true;
+                if (localStorage.getItem("theme") === "light") return false;
+                return window.matchMedia("(prefers-color-scheme: dark)").matches;
+            });
+
+            // Effect to apply dark mode class
+            useEffect(() => {
+                if (darkMode) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+            }, [darkMode]);
+
+            const toggleTheme = () => setDarkMode(!darkMode);
 
             // Get unique values for filters
             const topics = ["All", ...new Set(QUESTIONS_DATA.map(q => q.t))].sort();
@@ -497,7 +536,7 @@
             };
 
             return (
-                <div className="min-h-screen pb-12">
+                <div className="min-h-screen pb-12 transition-colors duration-300">
                     <SettingsModal 
                         isOpen={showSettings} 
                         onClose={() => setShowSettings(false)} 
@@ -506,8 +545,18 @@
                     />
 
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-blue-700 to-indigo-800 text-white pt-8 pb-16 px-4 relative">
-                         <div className="absolute top-4 right-4">
+                    <div className="bg-gradient-to-r from-blue-700 to-indigo-800 dark:from-slate-900 dark:to-slate-900 text-white pt-8 pb-20 px-4 relative transition-colors duration-300">
+                         <div className="absolute top-4 right-4 flex items-center gap-3">
+                            {/* Theme Toggle */}
+                            <button
+                                onClick={toggleTheme}
+                                className="p-2 bg-white/10 hover:bg-white/20 rounded-full text-yellow-300 hover:text-yellow-200 transition-colors backdrop-blur-sm"
+                                title="Toggle Theme"
+                            >
+                                {darkMode ? <IconSun className="w-5 h-5" /> : <IconMoon className="w-5 h-5" />}
+                            </button>
+
+                            {/* Settings Button */}
                             <button 
                                 onClick={() => setShowSettings(true)}
                                 className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors backdrop-blur-sm"
@@ -520,65 +569,70 @@
                             <h1 className="text-3xl md:text-4xl font-bold mb-2 flex items-center justify-center gap-3">
                                 API & Postman Interview Prep
                             </h1>
-                            <p className="text-blue-100 text-sm md:text-base">Top 100 questions to master API testing. Now with <span className="text-yellow-300 font-semibold">Gemini AI ✨</span>.</p>
+                            <p className="text-blue-100 dark:text-slate-400 text-sm md:text-base">Top 100 questions to master API testing. Now with <span className="text-yellow-300 font-semibold">Gemini AI ✨</span>.</p>
                         </div>
                     </div>
 
                     {/* Main Content Area (Overlapping Header) */}
-                    <main className="max-w-4xl mx-auto px-4 -mt-8">
+                    <main className="max-w-4xl mx-auto px-4 -mt-12 relative z-10">
                         
                         {/* Controls Card */}
-                        <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 mb-6">
+                        <div className="bg-white dark:bg-slate-850 rounded-xl shadow-lg p-4 md:p-6 mb-6 border border-gray-100 dark:border-slate-700 transition-colors duration-200">
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                                 {/* Search */}
                                 <div className="md:col-span-6 relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <IconSearch className="h-5 w-5 text-gray-400" />
+                                        <IconSearch className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                                     </div>
                                     <input
                                         type="text"
                                         placeholder="Search questions or keywords..."
-                                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out"
+                                        className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm transition duration-150 ease-in-out"
                                         value={search}
                                         onChange={(e) => setSearch(e.target.value)}
                                     />
                                 </div>
                                 
-                                {/* Filters */}
+                                {/* Filters - fixed heights to match input */}
                                 <div className="md:col-span-3">
                                     <div className="relative">
                                         <select
-                                            className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none bg-white"
+                                            className="block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm rounded-lg appearance-none cursor-pointer"
                                             value={topicFilter}
                                             onChange={(e) => setTopicFilter(e.target.value)}
                                         >
                                             {topics.map(t => <option key={t} value={t}>{t === 'All' ? 'All Topics' : t}</option>)}
                                         </select>
-                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 dark:text-gray-400">
                                             <IconFilter className="h-4 w-4" />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="md:col-span-3">
-                                    <select
-                                        className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg"
-                                        value={complexityFilter}
-                                        onChange={(e) => setComplexityFilter(e.target.value)}
-                                    >
-                                        <option value="All">All Levels</option>
-                                        {complexities.filter(c => c !== "All").map(c => (
-                                            <option key={c} value={c}>{c}</option>
-                                        ))}
-                                    </select>
+                                    <div className="relative">
+                                        <select
+                                            className="block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm rounded-lg appearance-none cursor-pointer"
+                                            value={complexityFilter}
+                                            onChange={(e) => setComplexityFilter(e.target.value)}
+                                        >
+                                            <option value="All">All Levels</option>
+                                            {complexities.filter(c => c !== "All").map(c => (
+                                                <option key={c} value={c}>{c}</option>
+                                            ))}
+                                        </select>
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 dark:text-gray-400">
+                                            <IconChevronDown className="h-4 w-4" />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Stats & List */}
-                        <div className="flex justify-between items-center mb-4 text-sm text-gray-500 px-1">
+                        <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-slate-400 px-1">
                             <span>Showing {filteredData.length} questions</span>
-                            {filteredData.length === 0 && <span className="text-red-500">No results found.</span>}
+                            {filteredData.length === 0 && <span className="text-red-500 dark:text-red-400">No results found.</span>}
                         </div>
 
                         <div className="space-y-3">
@@ -596,7 +650,7 @@
                     </main>
 
                     {/* Footer */}
-                    <footer className="text-center text-gray-400 text-xs py-8 mt-8">
+                    <footer className="text-center text-gray-400 dark:text-slate-600 text-xs py-8 mt-8">
                         <p>Powered by Gemini API • {new Date().getFullYear()}</p>
                     </footer>
                 </div>
