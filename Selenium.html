@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 200 Selenium Interview Questions (SDET Edition)</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                        selenium: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e', // Green/Teal for Selenium branding
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Markdown Parser (marked) for AI responses -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Markdown Styles */
+        .prose p { margin-bottom: 0.5em; }
+        .prose pre { padding: 0.75rem; border-radius: 0.5rem; overflow-x: auto; margin-top: 0.5rem; margin-bottom: 0.5rem; font-size: 0.875rem; background-color: #1e293b; color: #e2e8f0; }
+        .prose code { padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875em; background-color: rgba(0,0,0,0.1); }
+        .dark .prose code { background-color: rgba(255,255,255,0.1); }
+        .prose pre code { background: transparent; padding: 0; color: inherit; }
+        .prose ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.5rem; }
+        .prose ol { list-style-type: decimal; padding-left: 1.25rem; margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useEffect, useRef } = React;
+
+        // --- ICONS ---
+        const IconSearch = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>;
+        const IconChevronDown = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>;
+        const IconChevronUp = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg>;
+        const IconCopy = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>;
+        const IconCheck = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>;
+        const IconFilter = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>;
+        const IconSparkles = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>;
+        const IconCode = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>;
+        const IconBulb = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>;
+        const IconSettings = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>;
+        const IconClose = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>;
+        const IconMoon = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>;
+        const IconSun = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>;
+        const IconGlobe = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>;
+
+        // --- DATA (200 Selenium Questions) ---
+        // Data format: id, q(Question), a(Answer), e(Explanation/Context), t(Topic), c(Complexity)
+        const QUESTIONS_DATA = [
+            // PART 1: SELENIUM BASICS (1-20)
+            { id: 1, q: "What is Selenium and what are its components?", a: "Selenium is an open-source suite for automating web browsers. Components: Selenium IDE (Record/Playback), Selenium WebDriver (Code-based execution), Selenium Grid (Parallel/Distributed execution).", e: "The old Selenium RC (Remote Control) is deprecated.", t: "Basics", c: "Beginner" },
+            { id: 2, q: "Difference between `driver.get()` and `driver.navigate().to()`?", a: "`get()` waits for the page load to complete. `Maps().to()` behaves similarly but offers history methods like `back()`, `forward()`, `refresh()`.", e: "Functionally they both load a URL, but navigate() stores history.", t: "Basics", c: "Beginner" },
+            { id: 3, q: "What is WebDriver interface?", a: "WebDriver is an interface that defines methods to interact with a browser. Classes like ChromeDriver, FirefoxDriver implement this interface.", e: "Polymorphism: `WebDriver driver = new ChromeDriver();`", t: "Basics", c: "Beginner" },
+            { id: 4, q: "How to handle browser windows in Selenium?", a: "Use `getWindowHandle()` (current window ID) and `getWindowHandles()` (all window IDs). Switch using `driver.switchTo().window(handle)`.", e: "Returns a Set<String> because IDs are unique.", t: "Windows", c: "Intermediate" },
+            { id: 5, q: "How to close a browser window?", a: "`driver.close()` closes the current focused tab/window. `driver.quit()` closes all windows and kills the WebDriver session.", e: "Always use quit() at the end of a test execution.", t: "Basics", c: "Beginner" },
+            { id: 6, q: "What are the different types of locators in Selenium?", a: "ID, Name, ClassName, TagName, LinkText, PartialLinkText, CSS Selector, XPath.", e: "ID is fastest. XPath and CSS are most powerful.", t: "Locators", c: "Beginner" },
+            { id: 7, q: "Difference between Absolute and Relative XPath?", a: "Absolute starts from root `/html` (fragile). Relative starts with `//` and finds element anywhere (robust).", e: "Never use absolute XPath in production frameworks.", t: "Locators", c: "Beginner" },
+            { id: 8, q: "How to locate an element by text in XPath?", a: "Use `//tagname[text()='value']` or `//tagname[contains(text(),'value')]`.", e: "Very useful for buttons or labels.", t: "Locators", c: "Intermediate" },
+            { id: 9, q: "How to handle dynamic elements with changing IDs?", a: "Use relative XPath functions like `contains()`, `starts-with()`, or locate via stable parent/siblings.", e: "Example: `//div[contains(@id, 'user_')]` for `user_123`.", t: "Locators", c: "Intermediate" },
+            { id: 10, q: "What is `WebElement`?", a: "An interface representing an HTML element. It has methods like `click()`, `sendKeys()`, `getText()`, `isDisplayed()`.", e: "Find elements returns a WebElement object.", t: "Basics", c: "Beginner" },
+            { id: 11, q: "How to type text into a text box?", a: "`element.sendKeys(\"text\")`. To clear existing text, use `element.clear()` first.", e: "You can also send Keys like ENTER: `sendKeys(Keys.ENTER)`.", t: "Basics", c: "Beginner" },
+            { id: 12, q: "How to fetch the text of an element?", a: "Use `element.getText()`.", e: "To get the value of an input field, use `element.getAttribute(\"value\")`.", t: "Basics", c: "Beginner" },
+            { id: 13, q: "How to check if an element is visible, enabled, or selected?", a: "`isDisplayed()` (visible), `isEnabled()` (interactive), `isSelected()` (checkbox/radio).", e: "These return booleans.", t: "Basics", c: "Beginner" },
+            { id: 14, q: "How to handle Dropdowns?", a: "Use `Select` class for `<select>` tags. `Select s = new Select(element);` Methods: `selectByVisibleText`, `selectWithValue`, `selectByIndex`.", e: "For non-select (custom) dropdowns, click the dropdown and click the option locator.", t: "Web Elements", c: "Intermediate" },
+            { id: 15, q: "How to deselect options in a Dropdown?", a: "Use `deselectAll()`, `deselectByValue()`, etc. Only works for multi-select dropdowns.", e: "Standard single-select dropdowns cannot be 'deselected' to null.", t: "Web Elements", c: "Intermediate" },
+            { id: 16, q: "What is Selenium Grid?", a: "A tool to distribute tests across multiple physical/virtual machines and browsers simultaneously.", e: "Consists of a Hub (Central) and Nodes (Workers).", t: "Grid", c: "Advanced" },
+            { id: 17, q: "What is a Headless Browser?", a: "A browser without a GUI (Graphical User Interface). Examples: Chrome Headless, Firefox Headless.", e: "Faster execution, useful for CI/CD servers (Linux) without monitors.", t: "Advanced", c: "Intermediate" },
+            { id: 18, q: "How to maximize the window?", a: "`driver.manage().window().maximize();`", e: "Good practice to ensure all elements are visible.", t: "Basics", c: "Beginner" },
+            { id: 19, q: "How to refresh a page?", a: "`driver.navigate().refresh()` or `driver.findElement(By.tagName(\"body\")).sendKeys(Keys.F5)`.", e: "Navigation method is preferred.", t: "Basics", c: "Beginner" },
+            { id: 20, q: "Does Selenium support desktop application testing?", a: "No, Selenium is strictly for Web Applications. Tools like WinAppDriver or AutoIT are needed for desktop.", e: "Common interview trick question.", t: "Basics", c: "Beginner" },
+
+            // PART 2: WAITS & SYNCHRONIZATION (21-35)
+            { id: 21, q: "What is Synchronization in Selenium?", a: "Matching the speed of test execution with the speed of web application loading.", e: "Prevents NoSuchElementExceptions.", t: "Waits", c: "Intermediate" },
+            { id: 22, q: "Implicit Wait vs Explicit Wait?", a: "Implicit: Global wait applied to all elements for the entire driver session. Explicit: Applied to a specific element for a specific condition.", e: "Explicit wait is generally preferred for reliability.", t: "Waits", c: "Intermediate" },
+            { id: 23, q: "Syntax for Implicit Wait?", a: "`driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));`", e: "Note: In Selenium 4, use `Duration.ofSeconds`. Older versions used `TimeUnit`.", t: "Waits", c: "Intermediate" },
+            { id: 24, q: "What is FluentWait?", a: "A type of explicit wait that defines the maximum timeout AND the polling frequency (how often to check). Can ignore specific exceptions.", e: "Useful for AJAX elements that appear intermittently.", t: "Waits", c: "Advanced" },
+            { id: 25, q: "Why is Thread.sleep() not recommended?", a: "It pauses execution for a fixed time regardless of page state. It slows down tests unnecessarily (Hard Wait).", e: "Selenium Waits are 'Smart Waits' (proceed immediately once condition is met).", t: "Waits", c: "Intermediate" },
+            { id: 26, q: "What is `ExpectedConditions`?", a: "A class providing preset conditions for Explicit Wait. Examples: `visibilityOfElementLocated`, `elementToBeClickable`, `alertIsPresent`.", e: "Used inside `wait.until(ExpectedConditions...)`.", t: "Waits", c: "Intermediate" },
+            { id: 27, q: "How to wait for an element to disappear?", a: "Use `ExpectedConditions.invisibilityOf(element)`.", e: "Useful for loading spinners.", t: "Waits", c: "Intermediate" },
+            { id: 28, q: "Scenario: Element is present in DOM but not visible. How to wait?", a: "Use `ExpectedConditions.visibilityOf(element)`. Just checking `presenceOfElementLocated` is not enough.", e: "Presence = in HTML. Visibility = Height/Width > 0.", t: "Waits", c: "Advanced" },
+            { id: 29, q: "What is the default polling time in Explicit Wait?", a: "500 milliseconds (0.5 seconds).", e: "It checks the DOM every 0.5s until timeout.", t: "Waits", c: "Advanced" },
+            { id: 30, q: "Can we mix Implicit and Explicit Waits?", a: "Not recommended. It can cause unpredictable wait times (sometimes additive, sometimes conflicting).", e: "Stick to Explicit Waits in frameworks.", t: "Waits", c: "Advanced" },
+            { id: 31, q: "How to handle AJAX calls?", a: "Use `FluentWait` or wait for a specific element (like a loader) to disappear, or check JavaScript status via JS Executor.", e: "return document.readyState == 'complete'.", t: "Waits", c: "Advanced" },
+            { id: 32, q: "What is PageLoadTimeout?", a: "Sets the time to wait for a page to load completely before throwing an error.", e: "`driver.manage().timeouts().pageLoadTimeout(...)`", t: "Waits", c: "Intermediate" },
+            { id: 33, q: "What is ScriptTimeout?", a: "Sets the time to wait for an asynchronous script (executed via JSExecutor) to finish.", e: "Rarely used unless doing heavy JS injection.", t: "Waits", c: "Advanced" },
+            { id: 34, q: "How to implement a custom wait?", a: "Use a while loop with `Thread.sleep` (basic) or override `apply` method in FluentWait interface.", e: "Typically polling specifically for a database change or file download.", t: "Waits", c: "Expert" },
+            { id: 35, q: "Does Implicit Wait support `ExpectedConditions`?", a: "No, Implicit wait only checks for the presence of the element in the DOM.", e: "It doesn't care if it's clickable or visible.", t: "Waits", c: "Intermediate" },
+
+            // PART 3: ADVANCED INTERACTIONS (36-60)
+            { id: 36, q: "What is the `Actions` class?", a: "Used for advanced user interactions like Mouse Hover, Drag and Drop, Double Click, Right Click.", e: "Syntax: `Actions act = new Actions(driver);`", t: "Actions", c: "Intermediate" },
+            { id: 37, q: "How to perform Mouse Hover?", a: "`act.moveToElement(element).perform();`", e: "Don't forget `.perform()` or `.build().perform()`!", t: "Actions", c: "Intermediate" },
+            { id: 38, q: "How to perform Drag and Drop?", a: "`act.dragAndDrop(source, target).perform();` or `clickAndHold().moveToElement().release()`.", e: "Requires source and destination elements.", t: "Actions", c: "Intermediate" },
+            { id: 39, q: "How to perform Right Click?", a: "`act.contextClick(element).perform();`", e: "Context click opens the context menu.", t: "Actions", c: "Intermediate" },
+            { id: 40, q: "How to perform Double Click?", a: "`act.doubleClick(element).perform();`", e: "Used often in grid applications.", t: "Actions", c: "Intermediate" },
+            { id: 41, q: "How to handle Keyboard events?", a: "Use `sendKeys(Keys.TAB)`, `Keys.ENTER`, etc. Actions class can use `keyDown(Keys.SHIFT).sendKeys(\"a\").keyUp(...)`.", e: "Simulates pressing modifier keys.", t: "Actions", c: "Intermediate" },
+            { id: 42, q: "Difference between `build()` and `perform()`?", a: "`build()` generates the composite action. `perform()` executes it. `perform()` internally calls `build()`.", e: "Just using `perform()` is sufficient for single actions.", t: "Actions", c: "Advanced" },
+            { id: 43, q: "How to handle Alerts/Popups?", a: "Switch to alert: `Alert alert = driver.switchTo().alert();`. Methods: `accept()`, `dismiss()`, `getText()`, `sendKeys()`.", e: "Only works for Javascript Alerts (Window-based alerts need Robot class/AutoIT).", t: "Web Elements", c: "Intermediate" },
+            { id: 44, q: "How to handle Frames/iFrames?", a: "`driver.switchTo().frame(index/name/id/WebElement)`.", e: "To go back to main page: `driver.switchTo().defaultContent()`.", t: "Web Elements", c: "Intermediate" },
+            { id: 45, q: "How to locate an element inside a Frame?", a: "You must switch to the frame first. Locators won't find elements inside an iframe from the main context.", e: "Common cause of NoSuchElementException.", t: "Web Elements", c: "Intermediate" },
+            { id: 46, q: "How to handle Nested Frames?", a: "Switch to Parent Frame -> Switch to Child Frame. To exit, switch to Parent or Default Content.", e: "Navigation must follow the DOM hierarchy.", t: "Web Elements", c: "Advanced" },
+            { id: 47, q: "What is `JavascriptExecutor`?", a: "An interface to execute JavaScript code from Selenium.", e: "`JavascriptExecutor js = (JavascriptExecutor) driver;`", t: "JavaScript", c: "Intermediate" },
+            { id: 48, q: "How to click an element using JS?", a: "`js.executeScript(\"arguments[0].click();\", element);`", e: "Useful when standard click fails (e.g., intercepted by overlay).", t: "JavaScript", c: "Intermediate" },
+            { id: 49, q: "How to scroll down a page?", a: "`js.executeScript(\"window.scrollBy(0,500)\");` or `arguments[0].scrollIntoView(true);`.", e: "Selenium 4 also has wheel actions in Actions class.", t: "JavaScript", c: "Intermediate" },
+            { id: 50, q: "How to handle file upload?", a: "If `<input type='file'>` exists, use `sendKeys(\"C:/path/to/file.txt\")`.", e: "If no input tag (Robot class or AutoIT needed).", t: "Web Elements", c: "Intermediate" },
+            { id: 51, q: "How to handle file download verification?", a: "Configure browser preferences (ChromeOptions) to set download directory, then verify file existence using Java `File` class.", e: "Selenium cannot interact with the Save As dialog window.", t: "Scenarios", c: "Advanced" },
+            { id: 52, q: "How to take a Screenshot?", a: "Cast driver to `TakesScreenshot`. `File src = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);`", e: "Copy file to destination using FileUtils (Apache Commons) or FileHandler.", t: "Basics", c: "Intermediate" },
+            { id: 53, q: "How to capture a screenshot of a specific element?", a: "Call `getScreenshotAs` on the `WebElement` instance instead of `driver`.", e: "Newer Selenium feature.", t: "Basics", c: "Advanced" },
+            { id: 54, q: "How to handle browser cookies?", a: "`driver.manage().getCookies()`, `addCookie()`, `deleteCookieNamed()`, `deleteAllCookies()`.", e: "Useful for testing login persistence.", t: "Basics", c: "Advanced" },
+            { id: 55, q: "How to handle SSL Certificate errors?", a: "Use `ChromeOptions` or `FirefoxOptions`. `options.setAcceptInsecureCerts(true)`.", e: "Pass these options to the driver constructor.", t: "Basics", c: "Advanced" },
+            { id: 56, q: "What is `Robot` class?", a: "Java AWT class to simulate OS-level mouse/keyboard input.", e: "Used for handling Windows OS popups (Download/Upload) that Selenium can't touch.", t: "Advanced", c: "Advanced" },
+            { id: 57, q: "How to check broken links?", a: "Get all `<a>` tags, extract `href`, use `HttpURLConnection` to check response code (expect 200).", e: "Selenium extracts the URL, Java Networking checks validity.", t: "Scenarios", c: "Advanced" },
+            { id: 58, q: "How to retrieve tooltip text?", a: "Get the `title` attribute of the element. Or hover over element and check if a new DOM element appears.", e: "Standard tooltips usually live in the 'title' attribute.", t: "Web Elements", c: "Intermediate" },
+            { id: 59, q: "How to highlight an element?", a: "Use JSExecutor to change the CSS style (border).", e: "`js.executeScript(\"arguments[0].style.border='3px solid red'\", element);`", t: "JavaScript", c: "Intermediate" },
+            { id: 60, q: "What is Shadow DOM and how to handle it?", a: "Encapsulated DOM subtree. Use `SearchContext` or `getShadowRoot()` (Selenium 4).", e: "Standard locators cannot penetrate Shadow DOM boundary.", t: "Advanced", c: "Expert" },
+
+            // PART 4: FRAMEWORKS & TESTNG (61-100)
+            { id: 61, q: "What is a Framework?", a: "A set of guidelines and structure for code (reusability, maintenance, reporting).", e: "Types: Data Driven, Keyword Driven, Hybrid.", t: "Framework", c: "Intermediate" },
+            { id: 62, q: "What is TestNG?", a: "Testing framework (Next Generation) inspired by JUnit. Supports annotations, grouping, parallel execution.", e: "Standard for Java Selenium frameworks.", t: "TestNG", c: "Beginner" },
+            { id: 63, q: "Common TestNG Annotations?", a: "`@Test`, `@BeforeSuite`, `@AfterSuite`, `@BeforeClass`, `@AfterClass`, `@BeforeMethod`, `@AfterMethod`.", e: "Define the execution lifecycle.", t: "TestNG", c: "Beginner" },
+            { id: 64, q: "Execution order of Annotations?", a: "Suite -> Test -> Class -> Method -> @Test -> Method -> Class -> Test -> Suite.", e: "Method runs before every single @Test.", t: "TestNG", c: "Intermediate" },
+            { id: 65, q: "How to group tests in TestNG?", a: "Use `groups` attribute in `@Test(groups = {\"smoke\", \"regression\"})`. Run via XML.", e: "Allows running specific subsets of tests.", t: "TestNG", c: "Intermediate" },
+            { id: 66, q: "How to run tests in parallel?", a: "Set `parallel` attribute in `testng.xml` (methods, classes, tests).", e: "Thread safety of WebDriver is crucial here.", t: "TestNG", c: "Advanced" },
+            { id: 67, q: "What is `testng.xml`?", a: "Configuration file to define Test Suites, listeners, parameters, and execution order.", e: "The entry point for running the suite.", t: "TestNG", c: "Intermediate" },
+            { id: 68, q: "How to prioritize tests?", a: "Use `priority` attribute. `@Test(priority = 1)`. Default is 0.", e: "Lower number runs first.", t: "TestNG", c: "Beginner" },
+            { id: 69, q: "What happens if priority is same?", a: "Execution follows alphabetical order of method names.", e: "Ideally, tests should be independent.", t: "TestNG", c: "Intermediate" },
+            { id: 70, q: "What is `dependsOnMethods`?", a: "Makes a test wait for another test to pass. `@Test(dependsOnMethods = \"login\")`.", e: "If 'login' fails, this test is skipped.", t: "TestNG", c: "Intermediate" },
+            { id: 71, q: "Hard Assert vs Soft Assert?", a: "Hard: Stops execution immediately on failure. Soft: Continues execution and reports errors at the end (`assertAll()`).", e: "Use SoftAssert for verifying multiple fields on a page.", t: "TestNG", c: "Intermediate" },
+            { id: 72, q: "How to parameterize tests in TestNG?", a: "Using `@Parameters` (from XML) or `@DataProvider` (from Java code).", e: "DataProviders are more powerful for object arrays.", t: "TestNG", c: "Intermediate" },
+            { id: 73, q: "What is DataProvider return type?", a: "`Object[][]` (2D Array) or `Iterator<Object[]>`. ", e: "First dimension is iteration count, second is parameter count.", t: "TestNG", c: "Advanced" },
+            { id: 74, q: "How to retry failed tests automatically?", a: "Implement `IRetryAnalyzer` interface and set it in the @Test attribute or Listener.", e: "Good for flaky tests.", t: "TestNG", c: "Advanced" },
+            { id: 75, q: "What are Listeners in TestNG?", a: "Interfaces to modify TestNG behavior. Common: `ITestListener` (onTestStart, onTestFailure).", e: "Used for attaching screenshots to reports on failure.", t: "TestNG", c: "Advanced" },
+            { id: 76, q: "What is POM (Page Object Model)?", a: "Design pattern where each web page is a Java Class, elements are variables, and interactions are methods.", e: "Separates Page Objects from Test Scripts. Enhances maintenance.", t: "Framework", c: "Intermediate" },
+            { id: 77, q: "What is Page Factory?", a: "An optimized implementation of POM provided by Selenium. Uses `@FindBy` annotations.", e: "Initialized using `PageFactory.initElements(driver, this)`.", t: "Framework", c: "Intermediate" },
+            { id: 78, q: "Difference between POM and Page Factory?", a: "POM is the logic/pattern. Page Factory is a class/tool to implement that pattern with lazy initialization.", e: "Elements in Page Factory are initialized only when used.", t: "Framework", c: "Advanced" },
+            { id: 79, q: "What is `@FindBy`?", a: "Annotation to locate elements in Page Factory. `@FindBy(id=\"user\") WebElement user;`", e: "Replaces `driver.findElement`.", t: "Framework", c: "Intermediate" },
+            { id: 80, q: "What is `CacheLookup`?", a: "Annotation in Page Factory to store the element in cache memory. First access is normal, subsequent accesses use cache.", e: "Fast, but risky if DOM changes (StaleElement).", t: "Framework", c: "Expert" },
+            { id: 81, q: "Singleton Pattern in Framework?", a: "Ensures only one instance of WebDriver exists. Commonly used in Driver Factory class.", e: "Prevents opening multiple browsers accidentally.", t: "Framework", c: "Advanced" },
+            { id: 82, q: "What is Maven?", a: "Build automation tool. Manages dependencies (selenium-java, testng) via `pom.xml`.", e: "Handles compilation, testing, and packaging.", t: "Tools", c: "Intermediate" },
+            { id: 83, q: "How to run TestNG xml from Maven?", a: "Use maven-surefire-plugin in `pom.xml` and specify the suiteXmlFile.", e: "Run command: `mvn test`.", t: "Tools", c: "Intermediate" },
+            { id: 84, q: "What are Maven Lifecycles?", a: "validate, compile, test, package, verify, install, deploy.", e: "Most common for QAs: clean, test.", t: "Tools", c: "Intermediate" },
+            { id: 85, q: "What is Jenkins?", a: "CI (Continuous Integration) tool. Triggers test execution automatically (on code commit or schedule).", e: "Runs the Maven commands on a server.", t: "CI/CD", c: "Advanced" },
+            { id: 86, q: "How to parameterize Browser in Jenkins?", a: "Use String Parameter in Jenkins job, pass it to Maven command `-Dbrowser=$BROWSER`, read in Java via `System.getProperty(\"browser\")`.", e: "Allows switching Chrome/Firefox from Jenkins UI.", t: "CI/CD", c: "Expert" },
+            { id: 87, q: "What is BDD (Behavior Driven Development)?", a: "Agile methodology. Tests are written in plain English (Gherkin). Bridges gap between Tech and Non-Tech.", e: "Tools: Cucumber, SpecFlow.", t: "Cucumber", c: "Intermediate" },
+            { id: 88, q: "What is Gherkin?", a: "Language used in BDD. Keywords: Feature, Scenario, Given, When, Then, And.", e: "Stored in `.feature` files.", t: "Cucumber", c: "Beginner" },
+            { id: 89, q: "What is Step Definition?", a: "Java method mapped to a Gherkin step using regex/annotations (`@Given`, `@When`).", e: "The glue code connecting English to Java.", t: "Cucumber", c: "Intermediate" },
+            { id: 90, q: "What is TestRunner in Cucumber?", a: "A class annotated with `@CucumberOptions` to link Feature files and Step Definitions.", e: "Uses JUnit or TestNG to execute.", t: "Cucumber", c: "Intermediate" },
+            { id: 91, q: "Hooks in Cucumber?", a: "`@Before` and `@After` blocks executed before/after every Scenario.", e: "Similar to TestNG @BeforeMethod.", t: "Cucumber", c: "Intermediate" },
+            { id: 92, q: "Scenario Outline vs Scenario?", a: "Scenario is for single data set. Scenario Outline runs same test with multiple data sets (Examples table).", e: "Like DataProvider.", t: "Cucumber", c: "Intermediate" },
+            { id: 93, q: "Background in Cucumber?", a: "Common steps executed before every Scenario in a Feature file.", e: "Example: Login steps.", t: "Cucumber", c: "Intermediate" },
+            { id: 94, q: "Tags in Cucumber?", a: "`@smoke`, `@regression`. Used to filter which scenarios to run in TestRunner.", e: "tags = \"@smoke and not @wip\"", t: "Cucumber", c: "Intermediate" },
+            { id: 95, q: "What is Log4j?", a: "Logging library. Helps generate logs (Info, Error, Debug) for tracking execution steps.", e: "Better than System.out.println.", t: "Tools", c: "Intermediate" },
+            { id: 96, q: "What are Extent Reports?", a: "Third-party library for generating rich HTML reports with Pie charts, screenshots, and logs.", e: "More visual than default TestNG reports.", t: "Tools", c: "Intermediate" },
+            { id: 97, q: "How to read data from Excel?", a: "Use Apache POI library. Classes: `Workbook`, `Sheet`, `Row`, `Cell`.", e: "Standard for Data Driven Frameworks.", t: "Tools", c: "Advanced" },
+            { id: 98, q: "What is a Property File?", a: "Key-value pair file (.properties) for config data (URL, User, Pass). Read using `Properties` class.", e: "Prevents hardcoding values.", t: "Tools", c: "Beginner" },
+            { id: 99, q: "What is `ThreadLocal` in Framework?", a: "Java class used to create thread-safe variables. Essential for Parallel Execution in Selenium Grid.", e: "Stores separate WebDriver instance for every thread.", t: "Framework", c: "Expert" },
+            { id: 100, q: "Git commands for QA?", a: "init, clone, add, commit, push, pull, branch, merge, checkout.", e: "Version control is mandatory for teams.", t: "Tools", c: "Beginner" },
+
+            // PART 5: EXCEPTIONS (101-120)
+            { id: 101, q: "What is `NoSuchElementException`?", a: "Locator logic is correct, but element is not found in DOM.", e: "Reasons: Timing (need wait), Inside Frame, Incorrect Locator.", t: "Exceptions", c: "Beginner" },
+            { id: 102, q: "What is `StaleElementReferenceException`?", a: "Element was present, but DOM refreshed/changed, so the reference is now invalid (stale).", e: "Fix: Re-initialize the element or use Page Factory (it handles it partially) or retry loop.", t: "Exceptions", c: "Advanced" },
+            { id: 103, q: "What is `ElementNotInteractableException`?", a: "Element is in DOM but covered by another element, hidden, or collapsed.", e: "Fix: Scroll, Wait for overlay to disappear, or JS Click.", t: "Exceptions", c: "Intermediate" },
+            { id: 104, q: "What is `SessionNotFoundException`?", a: "Browser crashed or `driver.quit()` was called, but code tried to use driver again.", e: "Common in parallel execution setup issues.", t: "Exceptions", c: "Intermediate" },
+            { id: 105, q: "What is `TimeoutException`?", a: "Explicit Wait exceeded the time limit while waiting for condition.", e: "Condition was never met.", t: "Exceptions", c: "Beginner" },
+            { id: 106, q: "What is `UnhandledAlertException`?", a: "An alert popped up but code didn't handle it, blocking further actions.", e: "Fix: Switch to alert and accept/dismiss.", t: "Exceptions", c: "Intermediate" },
+            { id: 107, q: "What is `WebDriverException`?", a: "The parent class of Selenium exceptions. Often happens if browser version/driver version mismatch.", e: "Check your Driver manager.", t: "Exceptions", c: "Intermediate" },
+            { id: 108, q: "Difference between `NoAlertPresentException` and `UnhandledAlertException`?", a: "`NoAlert`: You tried to switch to alert, but none existed. `UnhandledAlert`: You tried to act on page, but alert blocked you.", e: "Context matters.", t: "Exceptions", c: "Intermediate" },
+            { id: 109, q: "How to handle exceptions in Selenium?", a: "Try-Catch blocks. In frameworks, use Listeners to catch exceptions and take screenshots.", e: "Don't just catch Exception e; catch specific ones.", t: "Exceptions", c: "Intermediate" },
+            { id: 110, q: "What causes `IllegalStateException`?", a: "Usually when Driver executable path is not set correctly.", e: "`System.setProperty` missing.", t: "Exceptions", c: "Beginner" },
+
+            // PART 6: SCENARIO BASED (111-160)
+            { id: 111, q: "Scenario: Login button is clicked, page loads, but test fails immediately.", a: "Cause: Script is faster than page load. Fix: Add Explicit Wait for a unique element on the Home Page.", e: "Never assume page load is instant.", t: "Scenarios", c: "Intermediate" },
+            { id: 112, q: "Scenario: How to handle CAPTCHA/OTP?", a: "Do NOT automate. Ask devs to disable it in Test Envs, use a static key, or fetch OTP from DB/API.", e: "Automation is for testing logic, not breaking security.", t: "Scenarios", c: "Advanced" },
+            { id: 113, q: "Scenario: A dynamic popup appears randomly. How to handle?", a: "Use `try-catch` inside a loop or a custom wrapper method. If popup exists, close it; else continue.", e: "Or use `ExpectedConditions.alertIsPresent()`.", t: "Scenarios", c: "Advanced" },
+            { id: 114, q: "Scenario: How to verify text color/font size?", a: "Use `element.getCssValue(\"color\")`, `getCssValue(\"font-size\")`.", e: "Returns RGB/RGBA strings.", t: "Scenarios", c: "Intermediate" },
+            { id: 115, q: "Scenario: Application works in Debug mode but fails in Run mode.", a: "Classic Synchronization issue. Debugging slows execution allowing elements to load.", e: "Fix: Add proper Waits.", t: "Scenarios", c: "Advanced" },
+            { id: 116, q: "Scenario: How to handle Angular/React applications?", a: "Standard Selenium works but sync is hard. Use `FluentWait`, `JavascriptExecutor` to wait for document readiness.", e: "Or use tools like Protractor/Playwright (Selenium specific wrappers exist).", t: "Scenarios", c: "Expert" },
+            { id: 117, q: "Scenario: Checking a checkbox only if it is unchecked?", a: "`if ( !element.isSelected() ) { element.click(); }`.", e: "Blindly clicking might uncheck it.", t: "Scenarios", c: "Intermediate" },
+            { id: 118, q: "Scenario: Upload 100 files?", a: "Loop the sendKeys method. Do not use Robot class (it steals mouse focus).", e: "Keep files in project resource folder.", t: "Scenarios", c: "Advanced" },
+            { id: 119, q: "Scenario: Drag and Drop HTML5 elements not working with Actions class?", a: "Known Selenium bug with some HTML5 libraries. Workaround: Use a JavaScript Helper to simulate drag events.", e: "Inject JS drag event simulation.", t: "Scenarios", c: "Expert" },
+            { id: 120, q: "Scenario: How to get all options from a dropdown?", a: "`List<WebElement> options = select.getOptions();` Iterate and `getText()`.", e: "Standard validation.", t: "Scenarios", c: "Intermediate" },
+            { id: 121, q: "Scenario: Handling Web Tables with dynamic rows?", a: "Use dynamic XPath `//table//tr`. Get size of list. Loop through rows.", e: "Find columns relative to the row.", t: "Scenarios", c: "Advanced" },
+            { id: 122, q: "Scenario: Get value from a cell in a table based on another cell?", a: "Xpath Axis: `//td[text()='Name']/following-sibling::td[1]`.", e: "Locate known text, traverse to unknown text.", t: "Scenarios", c: "Advanced" },
+            { id: 123, q: "Scenario: Element ID changes on reload (e.g., ext-gen123).", a: "Use CSS `input[id^='ext-gen']` (starts with) or XPath `contains`.", e: "Never use generated numbers in locators.", t: "Scenarios", c: "Intermediate" },
+            { id: 124, q: "Scenario: How to run tests on Chrome and Firefox parallelly?", a: "Configure TestNG XML with `parallel='tests'` and pass parameters `browser` to different `<test>` tags.", e: "Use ThreadLocal driver.", t: "Scenarios", c: "Advanced" },
+            { id: 125, q: "Scenario: How to interact with an element that disappears on click (Toast Msg)?", a: "Freeze DOM in debugger (F8) or inspect quickly. Use `getText` immediately.", e: "Usually stays for 3-5 seconds.", t: "Scenarios", c: "Expert" },
+            { id: 126, q: "Scenario: How to run tests without browser UI?", a: "Headless mode. `ChromeOptions options = new ChromeOptions(); options.addArguments(\"--headless\");`", e: "Essential for Linux servers.", t: "Scenarios", c: "Intermediate" },
+            { id: 127, q: "Scenario: Testing a video player?", a: "Selenium can check if container loads. For Play/Pause/Time, use JS Executor to check `<video>` tag properties.", e: "Selenium cannot 'watch' the video.", t: "Scenarios", c: "Expert" },
+            { id: 128, q: "Scenario: How to click a link that opens a new tab and verify it?", a: "Click -> `getWindowHandles` -> Switch to new handle -> Verify Title/URL -> Close -> Switch back.", e: "Managing window focus is key.", t: "Scenarios", c: "Intermediate" },
+            { id: 129, q: "Scenario: Extract all links and verify they don't return 404?", a: "FindElements `<a>`. Loop. Http request each href.", e: "Don't click them, it's too slow. Use HTTP Client.", t: "Scenarios", c: "Advanced" },
+            { id: 130, q: "Scenario: How to scroll to element view?", a: "`js.executeScript(\"arguments[0].scrollIntoView(true);\", element);`", e: "Very common fix for 'ElementNotInteractable'.", t: "Scenarios", c: "Intermediate" },
+            { id: 131, q: "Scenario: How to handle authentication popup (Browser level)?", a: "Embed credentials in URL: `https://user:pass@website.com`.", e: "Alert switching often fails for Basic Auth.", t: "Scenarios", c: "Advanced" },
+            { id: 132, q: "Scenario: Element click is intercepted by a sticky header.", a: "Scroll element slightly down or use JS Click.", e: "Sticky headers often cover elements at the top of viewport.", t: "Scenarios", c: "Intermediate" },
+            { id: 133, q: "Scenario: Date Picker handling?", a: "If input allows typing, sendKeys. If strictly popup, traverse the table logic (Month > Year > Day).", e: "Typing is always more robust.", t: "Scenarios", c: "Advanced" },
+            { id: 134, q: "Scenario: Slider control automation?", a: "Actions class `dragAndDropBy(element, xOffset, yOffset)`.", e: "Calculate pixel offset carefully.", t: "Scenarios", c: "Expert" },
+            { id: 135, q: "Scenario: SVG Element handling?", a: "Standard XPath might fail. Use `//*[name()='svg']` and `//*[name()='path']`.", e: "SVG creates its own namespace.", t: "Scenarios", c: "Expert" },
+            { id: 136, q: "Scenario: Canvas element automation?", a: "Canvas is a single image. Selenium can only click coordinates (Actions). Cannot inspect inside.", e: "Use visual testing tools (Applitools) or coordinate clicking.", t: "Scenarios", c: "Expert" },
+            { id: 137, q: "Scenario: How to get console logs?", a: "`driver.manage().logs().get(LogType.BROWSER)`.", e: "Good for detecting JS errors on page.", t: "Scenarios", c: "Advanced" },
+            { id: 138, q: "Scenario: How to zoom in/out?", a: "JS Executor `document.body.style.zoom='50%'`.", e: "Selenium doesn't have native zoom.", t: "Scenarios", c: "Intermediate" },
+            { id: 139, q: "Scenario: Validating a QR code?", a: "Take screenshot, use ZXing library (Java) to decode the image.", e: "Selenium captures, Java decodes.", t: "Scenarios", c: "Expert" },
+            { id: 140, q: "Scenario: Barcode automation?", a: "Send keys (numbers) to the input field where barcode scanner would output. Or use ZXing to read.", e: "Scanners acts like keyboards.", t: "Scenarios", c: "Advanced" },
+
+            // PART 7: SELENIUM 4 & NEW FEATURES (141-150)
+            { id: 141, q: "What is Selenium 4 Relative Locator?", a: "Locators like `above()`, `below()`, `toLeftOf()`, `toRightOf()`, `near()`.", e: "`driver.findElement(with(By.tagName(\"input\")).below(label))`", t: "Selenium 4", c: "Intermediate" },
+            { id: 142, q: "How to open a new tab/window in Selenium 4?", a: "`driver.switchTo().newWindow(WindowType.TAB);`", e: "No need for JSExecutor or Keys tricks anymore.", t: "Selenium 4", c: "Intermediate" },
+            { id: 143, q: "What is CDP in Selenium 4?", a: "Chrome DevTools Protocol. Allows accessing Network, Console, Performance metrics directly.", e: "Can simulate network speed (3G/4G).", t: "Selenium 4", c: "Expert" },
+            { id: 144, q: "How to simulate Geolocation?", a: "Use CDP (DevTools) to set override location.", e: "Useful for location-based testing.", t: "Selenium 4", c: "Expert" },
+            { id: 145, q: "What is W3C compliance?", a: "Selenium 4 is W3C compliant, meaning standard communication with browsers without JSON Wire Protocol encoding.", e: "More stable driver communication.", t: "Selenium 4", c: "Advanced" },
+            { id: 146, q: "How to minimize window in Selenium 4?", a: "`driver.manage().window().minimize()`.", e: "Native support added.", t: "Selenium 4", c: "Beginner" },
+            { id: 147, q: "Selenium IDE in 2024?", a: "Revamped. Can export code to Java/Python. Runs on Electron.", e: "Good for bug reproduction, bad for Frameworks.", t: "Tools", c: "Beginner" },
+            { id: 148, q: "Network Mocking?", a: "Selenium 4 allows intercepting network requests/responses via CDP.", e: "Can mock backend responses.", t: "Selenium 4", c: "Expert" },
+            { id: 149, q: "Full Page Screenshot?", a: "Available in Firefox driver natively, or via CDP in Chrome.", e: "Captures scrollable areas.", t: "Selenium 4", c: "Advanced" },
+            { id: 150, q: "Deprecation of DesiredCapabilities?", a: "Replaced by Options classes (ChromeOptions, FirefoxOptions).", e: "Use Options for capabilities.", t: "Selenium 4", c: "Intermediate" },
+
+            // PART 8: MISCELLANEOUS & HIGH LEVEL (151-200)
+            { id: 151, q: "Selenium vs Playwright?", a: "Selenium: Mature, standard, large community, slower. Playwright: Newer, faster, built-in waits, auto-download binaries.", e: "Playwright is the main competitor now.", t: "General", c: "Intermediate" },
+            { id: 152, q: "Selenium vs Cypress?", a: "Selenium: Runs outside browser (WebDriver). Cypress: Runs inside browser (JS). Cypress is fast but limited (no multiple tabs/windows native).", e: "Cypress is dev-centric.", t: "General", c: "Intermediate" },
+            { id: 153, q: "How to structure a framework folder?", a: "src/main/java (Pages, Utils), src/test/java (Tests), resources (XML, Drivers, Config).", e: "Standard Maven structure.", t: "Framework", c: "Intermediate" },
+            { id: 154, q: "What is Database Testing in Selenium?", a: "Selenium doesn't touch DB. Use JDBC (Java Database Connectivity) to connect, query, and verify against UI.", e: "Connect -> Query -> ResultSet -> Compare.", t: "Integration", c: "Advanced" },
+            { id: 155, q: "What is API Testing integration?", a: "Use RestAssured library within the same framework to setup test data or verify backend.", e: "Hybrid framework (UI + API).", t: "Integration", c: "Advanced" },
+            { id: 156, q: "How to handle browser notifications?", a: "`ChromeOptions options = new ChromeOptions(); options.addArguments(\"--disable-notifications\");`", e: "Blocks 'Allow/Block' popups.", t: "Scenarios", c: "Intermediate" },
+            { id: 157, q: "What is Docker's role in Selenium?", a: "Selenium Grid runs inside Docker containers (selenium/hub, selenium/node-chrome).", e: "Easy infrastructure setup and tear down.", t: "Grid", c: "Expert" },
+            { id: 158, q: "What is Zalenium/Selenoid?", a: "Enhanced versions of Selenium Grid with video recording and live preview features.", e: "Running in Docker containers.", t: "Grid", c: "Expert" },
+            { id: 159, q: "How to maintain Session ID?", a: "You cannot explicitly set session ID in WebDriver. It is managed by the driver.", e: "You can retrieve it `((RemoteWebDriver)driver).getSessionId()`.", t: "Advanced", c: "Expert" },
+            { id: 160, q: "Can Selenium read PDF?", a: "No. Need external library like PDFBox.", e: "Download PDF, parse with PDFBox, assert text.", t: "Integration", c: "Advanced" },
+            { id: 161, q: "How to optimize Framework speed?", a: "Parallel execution, Headless mode, proper locators (ID/CSS), remove Thread.sleep.", e: "Optimization is key for CI.", t: "Framework", c: "Advanced" },
+            { id: 162, q: "Cyclomatic Complexity in Tests?", a: "Avoid too many if-else conditions in tests. Move logic to Page Classes or Utils.", e: "Tests should be linear.", t: "Best Practices", c: "Advanced" },
+            { id: 163, q: "What is the 'Return Page Object' pattern?", a: "A method (e.g., clickLogin) returns the object of the next page.", e: "`public HomePage login() { ... return new HomePage(driver); }`", t: "Framework", c: "Expert" },
+            { id: 164, q: "How to handle crash recovery?", a: "Use Listeners to detect failure/crash and restart driver instance.", e: "Robustness.", t: "Framework", c: "Expert" },
+            { id: 165, q: "What is Saucelabs/BrowserStack?", a: "Cloud platforms providing Selenium Grid infrastructure.", e: "Run tests on hundreds of real devices/browsers remotely.", t: "Grid", c: "Intermediate" },
+            { id: 166, q: "Tunneling in Cloud Grid?", a: "Secure connection (Binary) to allow Cloud browsers to access your Localhost/Intranet app.", e: "Required for testing internal dev environments.", t: "Grid", c: "Expert" },
+            { id: 167, q: "AutoIT vs Sikuli?", a: "AutoIT: Windows automation (File upload). Sikuli: Image recognition automation.", e: "Sikuli uses screenshots to click elements.", t: "Tools", c: "Advanced" },
+            { id: 168, q: "Can Selenium test mobile apps?", a: "No. Appium is used for Mobile (Android/iOS). Appium uses WebDriver protocol.", e: "Selenium is Web only.", t: "General", c: "Beginner" },
+            { id: 169, q: "Responsive testing with Selenium?", a: "Resize window `manage().window().setSize(new Dimension(x,y))`.", e: "Check layout changes at breakpoints.", t: "Scenarios", c: "Intermediate" },
+            { id: 170, q: "Visual Regression Testing?", a: "Comparing screenshots pixel-by-pixel. Tools: AShot, Applitools.", e: "Selenium alone is not good for this (rendering diffs).", t: "Integration", c: "Advanced" },
+            { id: 171, q: "Performance Testing with Selenium?", a: "Not recommended. Use JMeter/Gatling. Selenium is for functional testing.", e: "Selenium is too heavy (1 user = 1 browser).", t: "General", c: "Intermediate" },
+            { id: 172, q: "Why use CSS Selectors over XPath?", a: "CSS is natively supported by browsers, faster, and cleaner syntax.", e: "XPath is only needed for text matching or backward traversal.", t: "Locators", c: "Advanced" },
+            { id: 173, q: "Handling 'Loading...' spinners?", a: "FluentWait ignoring NoSuchElement, waiting for Invisibility.", e: "Wait for spinner to vanish, then interact.", t: "Waits", c: "Intermediate" },
+            { id: 174, q: "How to emulate network offline?", a: "Use CDP (Chrome DevTools) network emulation.", e: "Test how app behaves without internet.", t: "Selenium 4", c: "Expert" },
+            { id: 175, q: "How to get HTTP Status Code?", a: "Selenium can't. Use a Proxy (BrowserMob Proxy) or fetch logs via CDP.", e: "WebDriver interacts with DOM, not Network layer (until Sel 4).", t: "Advanced", c: "Expert" },
+            { id: 176, q: "Handling 2FA (Email)?", a: "Connect to Email API (GMail API), fetch subject/body, extract code.", e: "Do not automate UI of Gmail/Outlook.", t: "Integration", c: "Expert" },
+            { id: 177, q: "What is `EventFiringWebDriver`?", a: "Deprecated in Selenium 4. Used to register listeners.", e: "Replaced by `WebDriverListener`.", t: "Advanced", c: "Advanced" },
+            { id: 178, q: "Difference between `close` and `quit` regarding memory?", a: "Quit kills the process (chromedriver.exe). Close leaves process running (memory leak).", e: "Accumulating processes crashes the server.", t: "Basics", c: "Intermediate" },
+            { id: 179, q: "Best practice for Locators?", a: "ID > Name > CSS > XPath. Avoid text locators for multi-language sites.", e: "Stability is key.", t: "Best Practices", c: "Beginner" },
+            { id: 180, q: "SRP (Single Responsibility Principle) in Framework?", a: "Page Class = Locators + Actions. Test Class = Assertions. Utils = Generic Logic.", e: "Don't assert in Page classes.", t: "Best Practices", c: "Advanced" },
+            { id: 181, q: "Drying code (DRY)?", a: "Don't Repeat Yourself. Wrap common actions (click, type) in a Wrapper Class.", e: "Enhances error handling and logging globally.", t: "Best Practices", c: "Intermediate" },
+            { id: 182, q: "KDT (Keyword Driven Testing)?", a: "Keywords (Click, Input) in Excel. Framework reads keyword and executes function via Reflection.", e: "Old school, less popular now compared to BDD.", t: "Framework", c: "Advanced" },
+            { id: 183, q: "Handling Shadow DOM open vs closed?", a: "Open: Accessible via JS/Selenium. Closed: Not accessible.", e: "Closed Shadow DOM is a blocker for automation.", t: "Advanced", c: "Expert" },
+            { id: 184, q: "How to assert check multiple failures?", a: "SoftAssert. Or collect errors in a List and assert list is empty at end.", e: "Don't stop at first error.", t: "TestNG", c: "Intermediate" },
+            { id: 185, q: "Parallel execution strategies?", a: "Methods (fastest, thread safe needed), Classes, Tests (safest).", e: "Depends on test independence.", t: "TestNG", c: "Advanced" },
+            { id: 186, q: "Difference between `FindElement` and `FindElements`?", a: "Element: Returns 1, throws Exception if 0. Elements: Returns List, returns empty list if 0.", e: "Use Elements to check non-existence.", t: "Basics", c: "Beginner" },
+            { id: 187, q: "Check if element exists without exception?", a: "`driver.findElements(By.id(\"..\")).size() > 0`.", e: "Robust check.", t: "Scenarios", c: "Intermediate" },
+            { id: 188, q: "Handling infinite scroll?", a: "JS Scroll to bottom, wait, check if height changed, repeat.", e: "While loop logic.", t: "Scenarios", c: "Advanced" },
+            { id: 189, q: "How to clean up before test?", a: "@BeforeMethod or @BeforeSuite. Clean DB, reset user state.", e: "Ensure atomic tests.", t: "Best Practices", c: "Advanced" },
+            { id: 190, q: "Difference between Checkbox and Radio?", a: "Checkbox: Multiple selection. Radio: Single selection in a group.", e: "Logic to select varies slightly.", t: "Web Elements", c: "Beginner" },
+            { id: 191, q: "How to handle browser zoom level issues?", a: "Always reset to 100% via JS or `Ctrl+0` keys.", e: "Zoom breaks coordinate based clicks.", t: "Scenarios", c: "Intermediate" },
+            { id: 192, q: "Managing test data?", a: "JSON, Excel, YAML, Database, or Faker library.", e: "Faker generates random names/emails.", t: "Tools", c: "Intermediate" },
+            { id: 193, q: "How to share state between Cucumber steps?", a: "Dependency Injection (PicoContainer). Share a 'TestContext' object.", e: "Avoid static variables.", t: "Cucumber", c: "Expert" },
+            { id: 194, q: "Handling 'Element Click Intercepted'?", a: "Wait for overlay to go, Scroll, or JS Click.", e: "Most common flaky error.", t: "Exceptions", c: "Intermediate" },
+            { id: 195, q: "What is `pom.xml` dependencies scope?", a: "compile, test (only for testing), provided, runtime.", e: "Selenium dependencies usually 'compile' or 'test'.", t: "Tools", c: "Intermediate" },
+            { id: 196, q: "Advantages of Selenium?", a: "Free, Large Community, Multi-language (Java, Py, C#), Multi-browser, Multi-OS.", e: "Industry standard.", t: "General", c: "Beginner" },
+            { id: 197, q: "Disadvantages of Selenium?", a: "No native Reporting, No Desktop App support, Hard Sync, No built-in Image Testing.", e: "Requires integration with other tools.", t: "General", c: "Intermediate" },
+            { id: 198, q: "How to debug a test failure in CI?", a: "Check Logs, Screenshots, Video (if grid), and reproduce locally with same data.", e: "Don't guess.", t: "CI/CD", c: "Intermediate" },
+            { id: 199, q: "What is a Flaky Test?", a: "Passes sometimes, fails sometimes without code change. Causes: Sync, Network, Shared State.", e: "The enemy of automation trust.", t: "General", c: "Intermediate" },
+            { id: 200, q: "Future of Selenium?", a: "Selenium 4 (W3C) ensured longevity. BiDi (Bi-Directional) API is coming to compete with Playwright.", e: "It's not dying, it's evolving.", t: "General", c: "Advanced" }
+        ];
+
+        // --- GEMINI API HELPER ---
+        const callGemini = async (prompt, userKey) => {
+            const apiKey = userKey || ""; 
+            
+            if (!apiKey) {
+                throw new Error("API_KEY_MISSING");
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            const maxRetries = 3;
+            const delays = [1000, 2000, 4000];
+
+            for (let i = 0; i <= maxRetries; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }]
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error?.message || `API Error: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+
+                } catch (err) {
+                    if (i === maxRetries) throw err;
+                    await new Promise(resolve => setTimeout(resolve, delays[i]));
+                }
+            }
+        };
+
+        // --- COMPONENTS ---
+
+        const Badge = ({ children, color }) => {
+            const colors = {
+                selenium: "bg-selenium-100 text-selenium-800 dark:bg-selenium-900/40 dark:text-selenium-200",
+                blue: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200",
+                green: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
+                yellow: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
+                red: "bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200",
+                gray: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+            };
+            return (
+                <span className={`px-2 py-0.5 rounded text-xs font-medium border border-transparent dark:border-white/10 ${colors[color] || colors.gray}`}>
+                    {children}
+                </span>
+            );
+        };
+
+        const SettingsModal = ({ isOpen, onClose, apiKey, setApiKey }) => {
+            if (!isOpen) return null;
+            const [localKey, setLocalKey] = useState(apiKey);
+
+            const handleSave = () => {
+                setApiKey(localKey);
+                localStorage.setItem("gemini_api_key", localKey);
+                onClose();
+            };
+
+            return (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 animate-fade-in backdrop-blur-sm">
+                    <div className="bg-white dark:bg-slate-850 rounded-xl shadow-2xl w-full max-w-md p-6 border border-gray-200 dark:border-slate-700">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-xl font-bold text-gray-800 dark:text-white">Settings</h2>
+                            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                                <IconClose className="w-6 h-6" />
+                            </button>
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Gemini API Key</label>
+                            <input 
+                                type="password" 
+                                value={localKey}
+                                onChange={(e) => setLocalKey(e.target.value)}
+                                placeholder="Enter your API Key..."
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg focus:ring-selenium-500 focus:border-selenium-500 placeholder-gray-400 dark:placeholder-gray-500"
+                            />
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                Your key is stored locally in your browser. Get a key from <a href="https://aistudio.google.com/" target="_blank" className="text-selenium-600 dark:text-selenium-500 underline">Google AI Studio</a>.
+                            </p>
+                        </div>
+                        <div className="flex justify-end gap-2">
+                            <button onClick={onClose} className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors">Cancel</button>
+                            <button onClick={handleSave} className="px-4 py-2 bg-selenium-600 text-white rounded-lg hover:bg-selenium-500 shadow-md transition-colors">Save</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const AIResponse = ({ content, loading, error, onRetry }) => {
+            if (loading) {
+                return (
+                    <div className="bg-selenium-50 dark:bg-selenium-900/10 rounded-lg p-4 animate-pulse flex items-center gap-3 border border-selenium-100 dark:border-selenium-800/30">
+                        <div className="w-5 h-5 border-2 border-selenium-600 dark:border-selenium-400 border-t-transparent rounded-full animate-spin"></div>
+                        <span className="text-selenium-800 dark:text-selenium-200 text-sm font-medium">Gemini is compiling...</span>
+                    </div>
+                );
+            }
+            if (error) {
+                return (
+                    <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 border border-red-100 dark:border-red-800">
+                        <p className="text-red-800 dark:text-red-200 text-sm mb-2">{error}</p>
+                        {error === "API_KEY_MISSING" ? (
+                            <button onClick={onRetry} className="text-xs bg-red-100 dark:bg-red-800/40 text-red-700 dark:text-red-200 px-2 py-1 rounded hover:bg-red-200 dark:hover:bg-red-800/60 font-medium">
+                                Open Settings to Add Key
+                            </button>
+                        ) : (
+                            <button onClick={onRetry} className="text-xs bg-red-100 dark:bg-red-800/40 text-red-700 dark:text-red-200 px-2 py-1 rounded hover:bg-red-200 dark:hover:bg-red-800/60 font-medium">
+                                Try Again
+                            </button>
+                        )}
+                    </div>
+                );
+            }
+            if (!content) return null;
+
+            return (
+                <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4 border border-slate-200 dark:border-slate-700 animate-fade-in relative group">
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                         <button 
+                            onClick={() => navigator.clipboard.writeText(content)}
+                            className="p-1 hover:bg-slate-200 dark:hover:bg-slate-600 rounded text-slate-600 dark:text-slate-300"
+                            title="Copy"
+                        >
+                            <IconCopy className="w-4 h-4" />
+                        </button>
+                    </div>
+                    <div className="prose prose-sm max-w-none text-slate-800 dark:text-slate-200" dangerouslySetInnerHTML={{ __html: marked.parse(content) }} />
+                </div>
+            );
+        };
+
+        const QuestionCard = ({ item, isOpen, onToggle, apiKey, openSettings }) => {
+            const [copied, setCopied] = useState(false);
+            const [aiState, setAiState] = useState({ loading: false, content: null, error: null, mode: null });
+
+            const handleCopy = (e) => {
+                e.stopPropagation();
+                const text = `Q: ${item.q}\nA: ${item.a}\nExplanation: ${item.e}`;
+                navigator.clipboard.writeText(text);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            };
+
+            const triggerAI = async (mode) => {
+                if (aiState.loading) return;
+                if (aiState.mode === mode && aiState.content) return;
+
+                setAiState({ loading: true, content: null, error: null, mode });
+
+                const context = `Context: The user is preparing for a Selenium Automation Engineer (SDET) interview using Java.
+                Question: "${item.q}"
+                Answer: "${item.a}"
+                Explanation: "${item.e}"`;
+
+                let prompt = "";
+                if (mode === 'simplify') {
+                    prompt = `${context}\n\nTask: Explain this concept simply (ELI5). Use analogies related to web browsing or manual testing. Keep it short.`;
+                } else if (mode === 'code') {
+                    prompt = `${context}\n\nTask: Provide a concise Selenium/Java code snippet demonstrating this. Avoid complex boilerplate, focus on the specific logic. Wrap code in markdown blocks.`;
+                } else if (mode === 'analogy') {
+                    prompt = `${context}\n\nTask: Provide a creative real-world analogy to explain this technical concept.`;
+                }
+
+                try {
+                    const result = await callGemini(prompt, apiKey);
+                    setAiState({ loading: false, content: result, error: null, mode });
+                } catch (err) {
+                    if (err.message === "API_KEY_MISSING") {
+                        setAiState({ loading: false, content: null, error: "API_KEY_MISSING", mode });
+                    } else {
+                        setAiState({ loading: false, content: null, error: "Failed to generate. Please try again.", mode });
+                    }
+                }
+            };
+
+            const handleRetry = () => {
+                if (aiState.error === "API_KEY_MISSING") {
+                    openSettings();
+                } else {
+                    triggerAI(aiState.mode);
+                }
+            };
+
+            const complexityColor = {
+                "Beginner": "green",
+                "Intermediate": "blue",
+                "Advanced": "selenium", // Custom brand color for Advanced
+                "Expert": "red"
+            }[item.c] || "gray";
+
+            return (
+                <div 
+                    className={`bg-white dark:bg-slate-850 rounded-lg shadow-sm border transition-all duration-200 overflow-hidden ${isOpen ? 'border-selenium-300 dark:border-selenium-600/50 ring-1 ring-selenium-100 dark:ring-selenium-900/30' : 'border-gray-200 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600'}`}
+                >
+                    <div className="p-4 cursor-pointer" onClick={onToggle}>
+                        <div className="flex justify-between items-start gap-3">
+                            <div className="flex-1">
+                                <div className="flex flex-wrap gap-2 mb-2">
+                                    <Badge color="gray">{item.t}</Badge>
+                                    <Badge color={complexityColor}>{item.c}</Badge>
+                                    <span className="text-gray-400 dark:text-slate-500 text-xs mt-0.5 font-mono">#{item.id}</span>
+                                </div>
+                                <h3 className="text-slate-900 dark:text-slate-100 font-semibold text-lg leading-tight">
+                                    {item.q}
+                                </h3>
+                            </div>
+                            <button className="text-gray-400 dark:text-slate-500 hover:text-selenium-500 dark:hover:text-selenium-400 mt-1">
+                                {isOpen ? <IconChevronUp className="w-6 h-6" /> : <IconChevronDown className="w-6 h-6" />}
+                            </button>
+                        </div>
+                    </div>
+
+                    {isOpen && (
+                        <div className="px-4 pb-4 animate-fade-in border-t border-gray-100 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-900/50">
+                            <div className="pt-3 space-y-4">
+                                <div>
+                                    <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Answer</p>
+                                    <p className="text-slate-800 dark:text-slate-200 font-medium">{item.a}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Context</p>
+                                    <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{item.e}</p>
+                                </div>
+
+                                {/* AI TOOLBAR */}
+                                <div className="mt-4 pt-3 border-t border-gray-200 dark:border-slate-700">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <IconSparkles className="w-4 h-4 text-selenium-500" />
+                                        <h4 className="text-xs font-bold text-selenium-600 dark:text-selenium-400 uppercase tracking-wide">Gemini Assistant</h4>
+                                    </div>
+                                    
+                                    <div className="flex flex-wrap gap-2 mb-3">
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); triggerAI('simplify'); }}
+                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${aiState.mode === 'simplify' ? 'bg-selenium-100 dark:bg-selenium-900/40 text-selenium-800 dark:text-selenium-200 ring-1 ring-selenium-200 dark:ring-selenium-700' : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-selenium-600 dark:hover:text-selenium-300'}`}
+                                        >
+                                            <IconBulb className="w-3.5 h-3.5" />
+                                            Simplify (ELI5) ✨
+                                        </button>
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); triggerAI('code'); }}
+                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${aiState.mode === 'code' ? 'bg-selenium-100 dark:bg-selenium-900/40 text-selenium-800 dark:text-selenium-200 ring-1 ring-selenium-200 dark:ring-selenium-700' : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-selenium-600 dark:hover:text-selenium-300'}`}
+                                        >
+                                            <IconCode className="w-3.5 h-3.5" />
+                                            Show Code ✨
+                                        </button>
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); triggerAI('analogy'); }}
+                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${aiState.mode === 'analogy' ? 'bg-selenium-100 dark:bg-selenium-900/40 text-selenium-800 dark:text-selenium-200 ring-1 ring-selenium-200 dark:ring-selenium-700' : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-selenium-600 dark:hover:text-selenium-300'}`}
+                                        >
+                                            <span className="text-sm">💡</span>
+                                            Analogy ✨
+                                        </button>
+                                    </div>
+
+                                    <AIResponse 
+                                        content={aiState.content} 
+                                        loading={aiState.loading} 
+                                        error={aiState.error}
+                                        onRetry={handleRetry}
+                                    />
+                                </div>
+
+                                <div className="flex justify-end pt-2">
+                                    <button 
+                                        onClick={handleCopy}
+                                        className={`flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors ${copied ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20' : 'text-gray-400 dark:text-slate-500 hover:bg-gray-200 dark:hover:bg-slate-700 hover:text-gray-600 dark:hover:text-slate-300'}`}
+                                    >
+                                        {copied ? <IconCheck className="w-3 h-3"/> : <IconCopy className="w-3 h-3"/>}
+                                        {copied ? "Copied" : "Copy Q&A"}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [search, setSearch] = useState("");
+            const [topicFilter, setTopicFilter] = useState("All");
+            const [complexityFilter, setComplexityFilter] = useState("All");
+            const [openId, setOpenId] = useState(null);
+            const [showSettings, setShowSettings] = useState(false);
+            const [apiKey, setApiKey] = useState(() => localStorage.getItem("gemini_api_key") || "");
+            
+            const [darkMode, setDarkMode] = useState(() => {
+                if (localStorage.getItem("selenium_prep_theme") === "dark") return true;
+                if (localStorage.getItem("selenium_prep_theme") === "light") return false;
+                return window.matchMedia("(prefers-color-scheme: dark)").matches;
+            });
+
+            useEffect(() => {
+                if (darkMode) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('selenium_prep_theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('selenium_prep_theme', 'light');
+                }
+            }, [darkMode]);
+
+            const toggleTheme = () => setDarkMode(!darkMode);
+
+            const topics = ["All", ...new Set(QUESTIONS_DATA.map(q => q.t))].sort();
+            const complexities = ["All", "Beginner", "Intermediate", "Advanced", "Expert"];
+
+            const filteredData = useMemo(() => {
+                return QUESTIONS_DATA.filter(item => {
+                    const matchesSearch = 
+                        item.q.toLowerCase().includes(search.toLowerCase()) || 
+                        item.a.toLowerCase().includes(search.toLowerCase()) ||
+                        item.e.toLowerCase().includes(search.toLowerCase());
+                    const matchesTopic = topicFilter === "All" || item.t === topicFilter;
+                    const matchesComplexity = complexityFilter === "All" || item.c === complexityFilter;
+                    return matchesSearch && matchesTopic && matchesComplexity;
+                });
+            }, [search, topicFilter, complexityFilter]);
+
+            const handleToggle = (id) => {
+                setOpenId(openId === id ? null : id);
+            };
+
+            return (
+                <div className="min-h-screen pb-12 transition-colors duration-300 font-sans">
+                    <SettingsModal 
+                        isOpen={showSettings} 
+                        onClose={() => setShowSettings(false)} 
+                        apiKey={apiKey} 
+                        setApiKey={setApiKey} 
+                    />
+
+                    {/* Header */}
+                    <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white pt-8 pb-20 px-4 relative shadow-md">
+                         <div className="absolute top-4 right-4 flex items-center gap-3">
+                            <button
+                                onClick={toggleTheme}
+                                className="p-2 bg-white/10 hover:bg-white/20 rounded-full text-amber-300 hover:text-amber-200 transition-colors backdrop-blur-sm"
+                                title="Toggle Theme"
+                            >
+                                {darkMode ? <IconSun className="w-5 h-5" /> : <IconMoon className="w-5 h-5" />}
+                            </button>
+                            <button 
+                                onClick={() => setShowSettings(true)}
+                                className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors backdrop-blur-sm"
+                            >
+                                <IconSettings className="w-4 h-4" />
+                                <span className="hidden sm:inline">Settings</span>
+                            </button>
+                        </div>
+                        <div className="max-w-4xl mx-auto text-center">
+                            <div className="flex justify-center mb-3">
+                                <div className="bg-selenium-500/20 p-3 rounded-full">
+                                    <IconGlobe className="w-10 h-10 text-selenium-500" />
+                                </div>
+                            </div>
+                            <h1 className="text-3xl md:text-4xl font-extrabold mb-3 tracking-tight">
+                                Selenium Interview Prep
+                            </h1>
+                            <p className="text-slate-300 text-sm md:text-base max-w-lg mx-auto">
+                                200 Essential Questions for <span className="text-selenium-400 font-semibold">SDETs & Automation Engineers</span>.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <main className="max-w-4xl mx-auto px-4 -mt-12 relative z-10">
+                        
+                        {/* Filters */}
+                        <div className="bg-white dark:bg-slate-850 rounded-xl shadow-lg p-4 md:p-6 mb-6 border border-gray-100 dark:border-slate-700">
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                                <div className="md:col-span-6 relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <IconSearch className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        placeholder="Search topics, scenarios..."
+                                        className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-selenium-500 focus:border-transparent sm:text-sm"
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                    />
+                                </div>
+                                
+                                <div className="md:col-span-3">
+                                    <div className="relative">
+                                        <select
+                                            className="block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-selenium-500 focus:border-transparent sm:text-sm rounded-lg appearance-none cursor-pointer"
+                                            value={topicFilter}
+                                            onChange={(e) => setTopicFilter(e.target.value)}
+                                        >
+                                            {topics.map(t => <option key={t} value={t}>{t === 'All' ? 'All Topics' : t}</option>)}
+                                        </select>
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                            <IconFilter className="h-4 w-4" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="md:col-span-3">
+                                    <div className="relative">
+                                        <select
+                                            className="block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-selenium-500 focus:border-transparent sm:text-sm rounded-lg appearance-none cursor-pointer"
+                                            value={complexityFilter}
+                                            onChange={(e) => setComplexityFilter(e.target.value)}
+                                        >
+                                            <option value="All">All Levels</option>
+                                            {complexities.filter(c => c !== "All").map(c => (
+                                                <option key={c} value={c}>{c}</option>
+                                            ))}
+                                        </select>
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                            <IconChevronDown className="h-4 w-4" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* List Status */}
+                        <div className="flex justify-between items-center mb-4 text-sm text-slate-500 dark:text-slate-400 px-1">
+                            <span>Showing {filteredData.length} questions</span>
+                            {filteredData.length === 0 && <span className="text-red-500">No results found.</span>}
+                        </div>
+
+                        {/* Cards */}
+                        <div className="space-y-3">
+                            {filteredData.map(item => (
+                                <QuestionCard 
+                                    key={item.id} 
+                                    item={item} 
+                                    isOpen={openId === item.id}
+                                    onToggle={() => handleToggle(item.id)}
+                                    apiKey={apiKey}
+                                    openSettings={() => setShowSettings(true)}
+                                />
+                            ))}
+                        </div>
+                    </main>
+
+                    <footer className="text-center text-slate-400 dark:text-slate-600 text-xs py-10 mt-8">
+                        <p>Built for Selenium SDETs • Powered by Gemini AI</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
