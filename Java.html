@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 100 Java Interview Questions (for Selenium)</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                        java: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            500: '#f97316', // Orange-ish for Java branding
+                            600: '#ea580c',
+                            900: '#7c2d12',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Markdown Parser (marked) for AI responses -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Markdown Styles */
+        .prose p { margin-bottom: 0.5em; }
+        .prose pre { padding: 0.75rem; border-radius: 0.5rem; overflow-x: auto; margin-top: 0.5rem; margin-bottom: 0.5rem; font-size: 0.875rem; background-color: #1e293b; color: #e2e8f0; }
+        .prose code { padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875em; background-color: rgba(0,0,0,0.1); }
+        .dark .prose code { background-color: rgba(255,255,255,0.1); }
+        .prose pre code { background: transparent; padding: 0; color: inherit; }
+        .prose ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.5rem; }
+        .prose ol { list-style-type: decimal; padding-left: 1.25rem; margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useEffect, useRef } = React;
+
+        // --- ICONS ---
+        const IconSearch = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>;
+        const IconChevronDown = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>;
+        const IconChevronUp = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg>;
+        const IconCopy = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>;
+        const IconCheck = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>;
+        const IconFilter = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>;
+        const IconSparkles = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>;
+        const IconCode = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>;
+        const IconBulb = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>;
+        const IconSettings = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>;
+        const IconClose = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>;
+        const IconMoon = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>;
+        const IconSun = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>;
+        const IconCoffee = ({ className }) => <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 1v3M10 1v3M14 1v3" /></svg>;
+
+        // --- DATA (100 Java Questions for Selenium) ---
+        const QUESTIONS_DATA = [
+            // PART 1: BASICS & FUNDAMENTALS (1-15)
+            { id: 1, q: "What is the difference between JDK, JRE, and JVM?", a: "JDK (Java Development Kit) contains tools to develop and run Java programs. JRE (Java Runtime Environment) contains libraries and JVM to run Java programs. JVM (Java Virtual Machine) is the engine that executes the bytecode.", e: "JDK = JRE + Development Tools (javac). JRE = JVM + Libraries. JVM = The engine. Automation testers usually need the JDK to write code.", t: "Fundamentals", c: "Beginner" },
+            { id: 2, q: "Why is Java called 'Platform Independent'?", a: "Because compiled Java code (bytecode) can run on any system that has a JVM. The JVM translates bytecode into machine-specific code.", e: "Write Once, Run Anywhere. The `.class` file generated on Windows can run on Linux/Mac without recompilation.", t: "Fundamentals", c: "Beginner" },
+            { id: 3, q: "What are the primitive data types in Java?", a: "byte, short, int, long (integers); float, double (decimals); char (character); boolean (true/false).", e: "There are 8 primitives. Strings and Arrays are NOT primitives; they are objects.", t: "Fundamentals", c: "Beginner" },
+            { id: 4, q: "What is a Wrapper Class?", a: "A class that encapsulates a primitive data type as an object. E.g., Integer for int, Double for double.", e: "Selenium collections (like ArrayList) store Objects, not primitives. So, `ArrayList<int>` is invalid; you must use `ArrayList<Integer>`.", t: "Fundamentals", c: "Intermediate" },
+            { id: 5, q: "What is the main method signature?", a: "`public static void main(String[] args)`", e: "public: accessible everywhere. static: can run without creating an object. void: returns nothing. main: entry point.", t: "Fundamentals", c: "Beginner" },
+            { id: 6, q: "Can we execute a program without a main method?", a: "Prior to JDK 7, yes via static block. In modern JDKs (7+), no. The main method is mandatory for standalone execution.", e: "Selenium tests (using TestNG/JUnit) don't strictly need a main method because the test runner invokes the `@Test` annotated methods.", t: "Fundamentals", c: "Intermediate" },
+            { id: 7, q: "What is the difference between `System.out.println` and `System.err.println`?", a: "`out` is the standard output stream (usually black text). `err` is the standard error stream (usually red text in IDEs).", e: "Use `err` for logging errors or exceptions to make them stand out in the console logs.", t: "Fundamentals", c: "Beginner" },
+            { id: 8, q: "What is a Constructor?", a: "A special block of code called when an instance of an object is created. It must have the same name as the class and no return type.", e: "Constructors are used to initialize objects. In Page Object Model (POM), we use constructors to initialize `WebDriver`.", t: "OOPs", c: "Beginner" },
+            { id: 9, q: "What is the difference between a default and parameterized constructor?", a: "A default constructor has no arguments. A parameterized constructor accepts arguments to initialize the object with specific values.", e: "If you don't define any constructor, Java inserts a default invisible one. If you define one, the default one vanishes.", t: "OOPs", c: "Beginner" },
+            { id: 10, q: "What is `this` keyword?", a: "`this` refers to the current object instance. It is used to differentiate between instance variables and local variables.", e: "Commonly used in constructors: `this.driver = driver;` assigns the passed driver to the class-level driver.", t: "Fundamentals", c: "Beginner" },
+            { id: 11, q: "What is `super` keyword?", a: "`super` refers to the immediate parent class object. It allows access to parent methods or constructors.", e: "Used to call the parent class constructor (`super()`) or to call a method overridden in the child class.", t: "OOPs", c: "Intermediate" },
+            { id: 12, q: "What is the difference between `==` and `.equals()`?", a: "`==` compares references (memory address) for objects. `.equals()` compares the content/values of the objects.", e: "For Strings: `s1 == s2` checks if they are the exact same object in memory. `s1.equals(s2)` checks if the text they hold is identical.", t: "Strings", c: "Intermediate" },
+            { id: 13, q: "What are the variable scopes in Java?", a: "Local (inside method), Instance (inside class, outside method), Static/Class (shared across all instances).", e: "Static variables are often used for constants or shared resources like a Singleton WebDriver instance.", t: "Fundamentals", c: "Beginner" },
+            { id: 14, q: "What is Type Casting?", a: "Converting one data type into another. Widening (automatic, small to big) vs Narrowing (manual, big to small).", e: "In Selenium, we use casting for JavaScriptExecutor: `JavaScriptExecutor js = (JavaScriptExecutor) driver;`.", t: "Fundamentals", c: "Intermediate" },
+            { id: 15, q: "What is the Java ClassLoader?", a: "Part of JRE that dynamically loads Java classes into the JVM during execution.", e: "You usually don't interact with this directly in automation, but it's good to know how libraries are loaded.", t: "Architecture", c: "Advanced" },
+
+            // PART 2: OOP CONCEPTS (16-35)
+            { id: 16, q: "What are the 4 pillars of OOP?", a: "Encapsulation, Inheritance, Polymorphism, Abstraction.", e: "These principles are the foundation of building robust automation frameworks (e.g., Page Object Model).", t: "OOPs", c: "Beginner" },
+            { id: 17, q: "What is Inheritance?", a: "A mechanism where one class acquires the properties and behaviors of a parent class using `extends`.", e: "BaseTest class (containing setup/teardown) is often inherited by Test classes.", t: "OOPs", c: "Beginner" },
+            { id: 18, q: "Does Java support Multiple Inheritance?", a: "No, Java doesn't support multiple inheritance with classes (to avoid Diamond Problem). However, it supports it via Interfaces.", e: "A class cannot extend two classes, but it can implement multiple interfaces.", t: "OOPs", c: "Intermediate" },
+            { id: 19, q: "What is Polymorphism?", a: "The ability of an object to take many forms. Two types: Compile-time (Overloading) and Runtime (Overriding).", e: "WebDriver driver = new ChromeDriver(); is Polymorphism. The interface is WebDriver, the form is Chrome.", t: "OOPs", c: "Intermediate" },
+            { id: 20, q: "Method Overloading vs Method Overriding?", a: "Overloading: Same method name, different parameters, same class. Overriding: Same method name, same parameters, different class (Child vs Parent).", e: "Overloading increases readability. Overriding allows specific implementation (e.g., a specific `click()` method).", t: "OOPs", c: "Intermediate" },
+            { id: 21, q: "Can we override static methods?", a: "No. Static methods belong to the class, not the object. If you define the same static method in child, it's called Method Hiding.", e: "Static binding happens at compile time, overriding happens at runtime.", t: "OOPs", c: "Advanced" },
+            { id: 22, q: "What is Encapsulation?", a: "Wrapping data (variables) and code (methods) together as a single unit and restricting access using `private`.", e: "In Page Object Model, WebElements are usually `private`, and we expose `public` methods to interact with them.", t: "OOPs", c: "Intermediate" },
+            { id: 23, q: "What is Abstraction?", a: "Hiding implementation details and showing only functionality. Achieved using Abstract Classes and Interfaces.", e: "WebDriver is an Interface. You know `driver.get()` opens a URL, but you don't know the complex internal code connecting to the browser.", t: "OOPs", c: "Intermediate" },
+            { id: 24, q: "Abstract Class vs Interface?", a: "Abstract Class: Can have abstract & non-abstract methods, `extends` keyword. Interface: Only abstract methods (until Java 8), `implements` keyword.", e: "Use Interface for defining a contract (like WebDriver). Use Abstract Class for shared partial implementation (like a BasePage).", t: "OOPs", c: "Intermediate" },
+            { id: 25, q: "Can an Interface implement another Interface?", a: "No, an Interface `extends` another Interface. A Class `implements` an Interface.", e: "Interface to Interface = extends. Class to Interface = implements.", t: "OOPs", c: "Intermediate" },
+            { id: 26, q: "What are Default Methods in Interfaces (Java 8)?", a: "Methods in interfaces that have a body (implementation), defined using the `default` keyword.", e: "Allows adding new methods to interfaces without breaking existing classes that implement them.", t: "Java 8", c: "Advanced" },
+            { id: 27, q: "What is a Marker Interface?", a: "An interface with no methods or constants (empty). Examples: Serializable, Cloneable.", e: "It tells the JVM that the object needs to be treated specifically.", t: "OOPs", c: "Advanced" },
+            { id: 28, q: "Can we create an object of an Abstract Class?", a: "No, abstract classes cannot be instantiated. However, we can create a reference variable.", e: "BaseClass b = new BaseClass(); // Error. BaseClass b = new ChildClass(); // Valid.", t: "OOPs", c: "Beginner" },
+            { id: 29, q: "What is the `final` keyword?", a: "Variable: Constant. Method: Cannot be overridden. Class: Cannot be inherited.", e: "`final String URL = '...';` is common for constants.", t: "Keywords", c: "Intermediate" },
+            { id: 30, q: "What is the `static` keyword?", a: "Belongs to the class, not instances. Loaded once into memory.", e: "Utility methods (like reading Config files) are often static so you can call them without creating an object.", t: "Keywords", c: "Intermediate" },
+            { id: 31, q: "Can a constructor be private?", a: "Yes. This restricts object creation from outside the class. Used in Singleton Design Pattern.", e: "To ensure only one instance of a WebDriver or Database connection exists.", t: "OOPs", c: "Advanced" },
+            { id: 32, q: "What is Constructor Chaining?", a: "Calling one constructor from another constructor using `this()` or `super()`.", e: "Useful when you have multiple constructors for a Page Object but want to execute common initialization code.", t: "OOPs", c: "Intermediate" },
+            { id: 33, q: "What is Association, Aggregation, and Composition?", a: "Association: Relationship between objects. Aggregation: 'Has-A' relationship (weak). Composition: 'Part-Of' relationship (strong).", e: "A Car has a Driver (Aggregation - driver can exist without car). A Car has an Engine (Composition - engine creates the car's existence).", t: "OOPs", c: "Advanced" },
+            { id: 34, q: "What is an Anonymous Inner Class?", a: "A class without a name declared inside another class, usually to override a method of an interface/class on the spot.", e: "Occasionally used in Threading or custom waits.", t: "OOPs", c: "Advanced" },
+            { id: 35, q: "What is the Object class?", a: "The root class of all classes in Java. Every class directly or indirectly inherits Object.", e: "Methods like `toString()`, `equals()`, and `hashCode()` come from here.", t: "OOPs", c: "Beginner" },
+
+            // PART 3: STRINGS (36-45)
+            { id: 36, q: "Why is String immutable in Java?", a: "Once created, the object cannot be changed. This ensures security (parameters), thread safety, and efficiency (String Pool).", e: "Crucial for passing locators or URLs safely.", t: "Strings", c: "Intermediate" },
+            { id: 37, q: "Difference between String, StringBuilder, and StringBuffer?", a: "String: Immutable. StringBuilder: Mutable, Not Thread-safe (Fast). StringBuffer: Mutable, Thread-safe (Slow).", e: "Use StringBuilder for heavy string manipulation (like building dynamic log messages).", t: "Strings", c: "Intermediate" },
+            { id: 38, q: "What is the String Constant Pool?", a: "A special memory area in the Heap where String literals are stored to save memory.", e: "`String s1 = 'Hi'; String s2 = 'Hi';` creates only one object in the pool.", t: "Strings", c: "Advanced" },
+            { id: 39, q: "What does `intern()` method do?", a: "It returns the canonical representation of the string from the pool. If not in pool, adds it.", e: "Forces a String object created with `new` to check the pool.", t: "Strings", c: "Advanced" },
+            { id: 40, q: "How to reverse a String?", a: "Use `StringBuilder(str).reverse().toString()` or write a for loop iterating backwards.", e: "A classic interview coding question.", t: "Strings", c: "Intermediate" },
+            { id: 41, q: "What is String `substring()`?", a: "Extracts a part of the string. `substring(startIndex, endIndex)`.", e: "Useful for extracting transaction IDs from success messages.", t: "Strings", c: "Beginner" },
+            { id: 42, q: "How to split a String?", a: "Use `str.split(delimiter)`. Returns a String array.", e: "Used to separate comma-separated values (CSV) or split a date '10-12-2023'.", t: "Strings", c: "Beginner" },
+            { id: 43, q: "Why use `char[]` over `String` for passwords?", a: "Strings stay in memory (Pool) until GC. Arrays can be explicitly wiped/overwritten immediately for security.", e: "Important for handling sensitive data.", t: "Strings", c: "Advanced" },
+            { id: 44, q: "Is `String` thread-safe?", a: "Yes, because it is immutable.", e: "Multiple threads can access a String variable without corruption.", t: "Strings", c: "Intermediate" },
+            { id: 45, q: "What happens if we put a String in an `if` condition?", a: "It causes a compile error. `if` expects a boolean.", e: "Unlike JS/Python, Java does not treat non-empty strings as 'truthy'.", t: "Strings", c: "Beginner" },
+
+            // PART 4: COLLECTIONS (46-60)
+            { id: 46, q: "Array vs ArrayList?", a: "Array: Fixed size, fast, holds primitives. ArrayList: Dynamic size, slower, holds Objects.", e: "In automation, we use ArrayList for lists of WebElements because the count often changes.", t: "Collections", c: "Beginner" },
+            { id: 47, q: "List vs Set?", a: "List: Ordered, allows duplicates. Set: Unordered, unique values only.", e: "Use List for dropdown options. Use Set for storing unique window handles.", t: "Collections", c: "Intermediate" },
+            { id: 48, q: "HashMap vs HashSet?", a: "HashMap stores Key-Value pairs. HashSet stores only Objects (unique).", e: "HashSet internally uses HashMap.", t: "Collections", c: "Intermediate" },
+            { id: 49, q: "ArrayList vs LinkedList?", a: "ArrayList: Uses dynamic array, fast for retrieval. LinkedList: Uses double-linked list, fast for insertion/deletion.", e: "Use ArrayList for storing test data. Use LinkedList if you manipulate the list heavily.", t: "Collections", c: "Intermediate" },
+            { id: 50, q: "HashMap vs HashTable?", a: "HashMap: Non-synchronized, allows 1 null key. HashTable: Synchronized, no null keys/values.", e: "HashMap is preferred unless thread safety is strictly required.", t: "Collections", c: "Intermediate" },
+            { id: 51, q: "How to iterate over a Map?", a: "Use `entrySet()`, `keySet()`, or `values()` in a for-each loop.", e: "Commonly used to iterate over test data read from Excel sheets.", t: "Collections", c: "Intermediate" },
+            { id: 52, q: "What is an Iterator?", a: "An interface to traverse a collection. Methods: `hasNext()`, `next()`, `remove()`.", e: "Safest way to remove elements from a list while looping through it (avoids ConcurrentModificationException).", t: "Collections", c: "Intermediate" },
+            { id: 53, q: "Comparable vs Comparator?", a: "Comparable: Default sorting (implement in class). Comparator: Custom sorting (separate class).", e: "Comparable uses `compareTo()`. Comparator uses `compare()`.", t: "Collections", c: "Advanced" },
+            { id: 54, q: "What is a TreeMap?", a: "A Map implementation that keeps keys sorted in natural or custom order.", e: "Useful if you need test data sorted alphabetically by key.", t: "Collections", c: "Advanced" },
+            { id: 55, q: "What is a PriorityQueue?", a: "A queue where elements are processed based on priority rather than FIFO.", e: "Rare in standard automation, but good for custom test execution order logic.", t: "Collections", c: "Advanced" },
+            { id: 56, q: "How to synchronize an ArrayList?", a: "Use `Collections.synchronizedList(list)`.", e: "Prevents data corruption if multiple threads access the list in parallel execution.", t: "Collections", c: "Advanced" },
+            { id: 57, q: "Fail-Fast vs Fail-Safe Iterators?", a: "Fail-Fast: Throws exception if collection modified during iteration (ArrayList). Fail-Safe: Works on a clone, no exception (ConcurrentHashMap).", e: "Knowing this prevents `ConcurrentModificationException` errors.", t: "Collections", c: "Advanced" },
+            { id: 58, q: "Can we add null to a Set?", a: "Yes, HashSet and LinkedHashSet allow exactly one null. TreeSet does not.", e: "Be careful with nulls when sorting.", t: "Collections", c: "Intermediate" },
+            { id: 59, q: "How does HashMap work internally?", a: "Uses Hashing. Key's hashCode determines the bucket (index). If collision (same index), uses Linked List (or Tree in Java 8+) in that bucket.", e: "Deep interview question for seniors.", t: "Collections", c: "Expert" },
+            { id: 60, q: "Difference between `poll()` and `remove()` in Queue?", a: "`poll()` returns null if empty. `remove()` throws an exception if empty.", e: "Safer to use poll() to avoid crashes.", t: "Collections", c: "Intermediate" },
+
+            // PART 5: EXCEPTIONS & THREADING (61-75)
+            { id: 61, q: "Exception vs Error?", a: "Exception: Recoverable (e.g., FileNotFound). Error: Irrecoverable (e.g., OutOfMemoryError).", e: "You handle Exceptions. You generally can't handle Errors.", t: "Exceptions", c: "Beginner" },
+            { id: 62, q: "Checked vs Unchecked Exceptions?", a: "Checked: Checked at compile-time (IOException). Unchecked: Occur at runtime (NullPointerException).", e: "Thread.sleep() throws a checked InterruptedException. WebDrivers usually throw unchecked exceptions.", t: "Exceptions", c: "Intermediate" },
+            { id: 63, q: "`throw` vs `throws`?", a: "`throw`: Used explicitly to throw an exception. `throws`: Declares that a method might throw an exception.", e: "You `throw` a new Exception inside a method. You add `throws` to the method signature.", t: "Exceptions", c: "Intermediate" },
+            { id: 64, q: "What is `finally` block?", a: "A block that always executes regardless of exception occurrence. Used for cleanup.", e: "Used to close DB connections or quit the driver.", t: "Exceptions", c: "Beginner" },
+            { id: 65, q: "Can `finally` be skipped?", a: "Only if `System.exit(0)` is called or the JVM crashes.", e: "Otherwise, it is guaranteed to run.", t: "Exceptions", c: "Intermediate" },
+            { id: 66, q: "final, finally, finalize?", a: "final: Constant/Immutable. finally: Block for cleanup. finalize: Method called by Garbage Collector.", e: "Classic confusion question.", t: "Keywords", c: "Intermediate" },
+            { id: 67, q: "What is ClassCastException?", a: "Occurs when trying to cast an object to a subclass of which it is not an instance.", e: "Trying to cast a String to an Integer.", t: "Exceptions", c: "Intermediate" },
+            { id: 68, q: "What is NullPointerException (NPE)?", a: "Occurs when calling a method or accessing a field on a null reference.", e: "Usually implies you forgot to initialize a variable or the driver.", t: "Exceptions", c: "Beginner" },
+            { id: 69, q: "What is Try-with-Resources?", a: "Java 7 feature that automatically closes resources (like files) declared in the try parentheses.", e: "Cleaner than using a manual finally block.", t: "Exceptions", c: "Advanced" },
+            { id: 70, q: "What is a Thread?", a: "A lightweight sub-process. The smallest unit of processing.", e: "TestNG allows parallel execution using threads.", t: "Threading", c: "Beginner" },
+            { id: 71, q: "How to create a Thread?", a: "By extending `Thread` class or implementing `Runnable` interface.", e: "Implementing Runnable is preferred (allows inheritance).", t: "Threading", c: "Intermediate" },
+            { id: 72, q: "What is `synchronized`?", a: "A keyword ensuring only one thread accesses a method/block at a time.", e: "Prevents race conditions in parallel testing.", t: "Threading", c: "Advanced" },
+            { id: 73, q: "Wait vs Sleep?", a: "Wait: Releases lock, waits for notify (Object method). Sleep: Holds lock, pauses execution (Thread method).", e: "Use Implicit/Explicit waits in Selenium, avoid Thread.sleep().", t: "Threading", c: "Intermediate" },
+            { id: 74, q: "What is a Deadlock?", a: "When two threads wait for each other to release resources forever.", e: "Can happen in poorly designed parallel execution frameworks.", t: "Threading", c: "Advanced" },
+            { id: 75, q: "What is `volatile` keyword?", a: "Indicates that a variable's value will be modified by different threads.", e: "Ensures the value is read from main memory, not thread cache.", t: "Keywords", c: "Expert" },
+
+            // PART 6: JAVA 8 & MISC (76-100)
+            { id: 76, q: "What are Lambda Expressions?", a: "A short block of code which takes in parameters and returns a value. Syntax: `(params) -> expression`.", e: "Used heavily in Streams and functional programming.", t: "Java 8", c: "Intermediate" },
+            { id: 77, q: "What is a Functional Interface?", a: "An interface with exactly one abstract method. Examples: Runnable, Callable.", e: "Can be used with Lambda expressions.", t: "Java 8", c: "Advanced" },
+            { id: 78, q: "What is the Stream API?", a: "A sequence of elements supporting sequential and parallel aggregate operations (filter, map, reduce).", e: "Great for filtering lists of WebElements based on text.", t: "Java 8", c: "Intermediate" },
+            { id: 79, q: "Difference between Collection and Stream?", a: "Collection: Storage of data. Stream: Computation of data.", e: "You store elements in a List, but you process them (filter/sort) using Stream.", t: "Java 8", c: "Advanced" },
+            { id: 80, q: "What is `Optional` class?", a: "A container object which may or may not contain a non-null value.", e: "Avoids NullPointerExceptions by forcing you to check presence.", t: "Java 8", c: "Advanced" },
+            { id: 81, q: "ForEach method?", a: "Iterates over elements. `list.forEach(item -> System.out.println(item));`", e: "Syntactic sugar for loops.", t: "Java 8", c: "Intermediate" },
+            { id: 82, q: "Intermediate vs Terminal operations in Stream?", a: "Intermediate: Returns stream (filter, map). Terminal: Returns result/void (collect, forEach).", e: "Stream doesn't execute until a Terminal operation is called (Lazy evaluation).", t: "Java 8", c: "Advanced" },
+            { id: 83, q: "What is Method Reference `::`?", a: "Shorthand notation of a lambda expression to call a method.", e: "`System.out::println` instead of `s -> System.out.println(s)`.", t: "Java 8", c: "Intermediate" },
+            { id: 84, q: "Reflection API?", a: "Ability of code to inspect and manipulate classes, methods, and fields at runtime.", e: "Selenium uses reflection internally. TestNG uses it to find `@Test` methods.", t: "Architecture", c: "Expert" },
+            { id: 85, q: "What is Garbage Collection (GC)?", a: "Automatic memory management process to remove unused objects.", e: "You can request it via `System.gc()`, but execution isn't guaranteed.", t: "Architecture", c: "Advanced" },
+            { id: 86, q: "What is Serialization?", a: "Converting an object into a byte stream to save to a file/network.", e: "Used when saving test session states or passing objects over network.", t: "Architecture", c: "Advanced" },
+            { id: 87, q: "transient keyword?", a: "Prevents a variable from being serialized.", e: "Passwords should be transient so they aren't saved to files.", t: "Keywords", c: "Advanced" },
+            { id: 88, q: "Singleton Design Pattern?", a: "Ensures a class has only one instance.", e: "Common pattern for `DriverManager` to ensure one browser window per thread.", t: "Design Patterns", c: "Intermediate" },
+            { id: 89, q: "Factory Design Pattern?", a: "Creates objects without specifying the exact class.", e: "`WebDriver driver = new ChromeDriver()` (Polymorphism) is often wrapped in a Factory to switch browsers easily.", t: "Design Patterns", c: "Intermediate" },
+            { id: 90, q: "Difference between Stack and Heap memory?", a: "Stack: Local variables, method calls (LIFO). Heap: Objects (new keyword).", e: "StackOverflowError happens in infinite recursion. OutOfMemoryError happens in Heap.", t: "Architecture", c: "Advanced" },
+            { id: 91, q: "What is Enum?", a: "A special data type to define a collection of constants.", e: "Used for BrowserTypes (CHROME, FIREFOX) or Environments (QA, PROD).", t: "Fundamentals", c: "Intermediate" },
+            { id: 92, q: "How to read properties file in Java?", a: "Use `Properties` class. `prop.load(new FileInputStream('path'))`.", e: "Standard way to read config.properties in frameworks.", t: "IO", c: "Intermediate" },
+            { id: 93, q: "BufferedReader vs Scanner?", a: "BufferedReader: Faster, reads strings. Scanner: Slower, parses primitives.", e: "Use BufferedReader for large file reading.", t: "IO", c: "Intermediate" },
+            { id: 94, q: "Access Modifiers scope?", a: "Public (World), Protected (Package + Kids), Default (Package), Private (Class).", e: "Knowing this is vital for API encapsulation.", t: "Fundamentals", c: "Beginner" },
+            { id: 95, q: "Can we overload main method?", a: "Yes, but JVM only calls the one with `String[] args`.", e: "Other main methods are just normal methods.", t: "Fundamentals", c: "Intermediate" },
+            { id: 96, q: "What is JIT Compiler?", a: "Just-In-Time compiler. Optimizes bytecode to native code at runtime for performance.", e: "Makes Java faster.", t: "Architecture", c: "Expert" },
+            { id: 97, q: "Difference between process and thread?", a: "Process: Separate memory space (App). Thread: Shared memory space (Task inside App).", e: "Browser tabs are processes (mostly). Operations inside tab are threads.", t: "Threading", c: "Advanced" },
+            { id: 98, q: "Immutable Class creation steps?", a: "Final class, private final fields, constructor initialization, no setters.", e: "Like how `String` is designed.", t: "Design Patterns", c: "Expert" },
+            { id: 99, q: "What is `instanceof` operator?", a: "Checks if an object is an instance of a specific class/interface.", e: "`if (driver instanceof JavascriptExecutor)` before casting.", t: "Keywords", c: "Intermediate" },
+            { id: 100, q: "Why pointers are not used in Java?", a: "For security and simplicity (memory management is handled by JVM).", e: "Prevents direct memory access which causes crashes in C++.", t: "Fundamentals", c: "Intermediate" }
+        ];
+
+        // --- GEMINI API HELPER ---
+        const callGemini = async (prompt, userKey) => {
+            const apiKey = userKey || ""; // User must provide key or fallback logic here if you have a proxy
+            
+            if (!apiKey) {
+                throw new Error("API_KEY_MISSING");
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            const maxRetries = 3;
+            const delays = [1000, 2000, 4000];
+
+            for (let i = 0; i <= maxRetries; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }]
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error?.message || `API Error: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+
+                } catch (err) {
+                    if (i === maxRetries) throw err;
+                    await new Promise(resolve => setTimeout(resolve, delays[i]));
+                }
+            }
+        };
+
+        // --- COMPONENTS ---
+
+        const Badge = ({ children, color }) => {
+            const colors = {
+                blue: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200",
+                green: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
+                yellow: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
+                red: "bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200",
+                orange: "bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-200",
+                gray: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+            };
+            return (
+                <span className={`px-2 py-0.5 rounded text-xs font-medium border border-transparent dark:border-white/10 ${colors[color] || colors.gray}`}>
+                    {children}
+                </span>
+            );
+        };
+
+        const SettingsModal = ({ isOpen, onClose, apiKey, setApiKey }) => {
+            if (!isOpen) return null;
+            const [localKey, setLocalKey] = useState(apiKey);
+
+            const handleSave = () => {
+                setApiKey(localKey);
+                localStorage.setItem("gemini_api_key", localKey);
+                onClose();
+            };
+
+            return (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 animate-fade-in backdrop-blur-sm">
+                    <div className="bg-white dark:bg-slate-850 rounded-xl shadow-2xl w-full max-w-md p-6 border border-gray-200 dark:border-slate-700">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-xl font-bold text-gray-800 dark:text-white">Settings</h2>
+                            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                                <IconClose className="w-6 h-6" />
+                            </button>
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Gemini API Key</label>
+                            <input 
+                                type="password" 
+                                value={localKey}
+                                onChange={(e) => setLocalKey(e.target.value)}
+                                placeholder="Enter your API Key..."
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg focus:ring-java-500 focus:border-java-500 placeholder-gray-400 dark:placeholder-gray-500"
+                            />
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                Your key is stored locally in your browser. Get a key from <a href="https://aistudio.google.com/" target="_blank" className="text-java-600 dark:text-java-500 underline">Google AI Studio</a>.
+                            </p>
+                        </div>
+                        <div className="flex justify-end gap-2">
+                            <button onClick={onClose} className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors">Cancel</button>
+                            <button onClick={handleSave} className="px-4 py-2 bg-java-600 text-white rounded-lg hover:bg-java-500 shadow-md transition-colors">Save</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const AIResponse = ({ content, loading, error, onRetry }) => {
+            if (loading) {
+                return (
+                    <div className="bg-java-50 dark:bg-java-900/10 rounded-lg p-4 animate-pulse flex items-center gap-3 border border-java-100 dark:border-java-800/30">
+                        <div className="w-5 h-5 border-2 border-java-600 dark:border-java-400 border-t-transparent rounded-full animate-spin"></div>
+                        <span className="text-java-800 dark:text-java-200 text-sm font-medium">Gemini is compiling...</span>
+                    </div>
+                );
+            }
+            if (error) {
+                return (
+                    <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 border border-red-100 dark:border-red-800">
+                        <p className="text-red-800 dark:text-red-200 text-sm mb-2">{error}</p>
+                        {error === "API_KEY_MISSING" ? (
+                            <button onClick={onRetry} className="text-xs bg-red-100 dark:bg-red-800/40 text-red-700 dark:text-red-200 px-2 py-1 rounded hover:bg-red-200 dark:hover:bg-red-800/60 font-medium">
+                                Open Settings to Add Key
+                            </button>
+                        ) : (
+                            <button onClick={onRetry} className="text-xs bg-red-100 dark:bg-red-800/40 text-red-700 dark:text-red-200 px-2 py-1 rounded hover:bg-red-200 dark:hover:bg-red-800/60 font-medium">
+                                Try Again
+                            </button>
+                        )}
+                    </div>
+                );
+            }
+            if (!content) return null;
+
+            return (
+                <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4 border border-slate-200 dark:border-slate-700 animate-fade-in relative group">
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                         <button 
+                            onClick={() => navigator.clipboard.writeText(content)}
+                            className="p-1 hover:bg-slate-200 dark:hover:bg-slate-600 rounded text-slate-600 dark:text-slate-300"
+                            title="Copy"
+                        >
+                            <IconCopy className="w-4 h-4" />
+                        </button>
+                    </div>
+                    <div className="prose prose-sm max-w-none text-slate-800 dark:text-slate-200" dangerouslySetInnerHTML={{ __html: marked.parse(content) }} />
+                </div>
+            );
+        };
+
+        const QuestionCard = ({ item, isOpen, onToggle, apiKey, openSettings }) => {
+            const [copied, setCopied] = useState(false);
+            const [aiState, setAiState] = useState({ loading: false, content: null, error: null, mode: null });
+
+            const handleCopy = (e) => {
+                e.stopPropagation();
+                const text = `Q: ${item.q}\nA: ${item.a}\nExplanation: ${item.e}`;
+                navigator.clipboard.writeText(text);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            };
+
+            const triggerAI = async (mode) => {
+                if (aiState.loading) return;
+                if (aiState.mode === mode && aiState.content) return;
+
+                setAiState({ loading: true, content: null, error: null, mode });
+
+                const context = `Context: The user is preparing for a Java interview specifically for a Selenium Automation Testing role.
+                Question: "${item.q}"
+                Answer: "${item.a}"
+                Explanation: "${item.e}"`;
+
+                let prompt = "";
+                if (mode === 'simplify') {
+                    prompt = `${context}\n\nTask: Explain this concept simply (ELI5). Use analogies related to automation testing if possible. Keep it short.`;
+                } else if (mode === 'code') {
+                    prompt = `${context}\n\nTask: Provide a concise Java code snippet demonstrating this. Avoid complex boilerplate. Wrap code in markdown.`;
+                } else if (mode === 'analogy') {
+                    prompt = `${context}\n\nTask: Provide a creative real-world analogy to explain this concept.`;
+                }
+
+                try {
+                    const result = await callGemini(prompt, apiKey);
+                    setAiState({ loading: false, content: result, error: null, mode });
+                } catch (err) {
+                    if (err.message === "API_KEY_MISSING") {
+                        setAiState({ loading: false, content: null, error: "API_KEY_MISSING", mode });
+                    } else {
+                        setAiState({ loading: false, content: null, error: "Failed to generate. Please try again.", mode });
+                    }
+                }
+            };
+
+            const handleRetry = () => {
+                if (aiState.error === "API_KEY_MISSING") {
+                    openSettings();
+                } else {
+                    triggerAI(aiState.mode);
+                }
+            };
+
+            const complexityColor = {
+                "Beginner": "green",
+                "Intermediate": "blue",
+                "Advanced": "orange",
+                "Expert": "red"
+            }[item.c] || "gray";
+
+            return (
+                <div 
+                    className={`bg-white dark:bg-slate-850 rounded-lg shadow-sm border transition-all duration-200 overflow-hidden ${isOpen ? 'border-java-300 dark:border-java-600/50 ring-1 ring-java-100 dark:ring-java-900/30' : 'border-gray-200 dark:border-slate-700 hover:shadow-md dark:hover:border-slate-600'}`}
+                >
+                    <div className="p-4 cursor-pointer" onClick={onToggle}>
+                        <div className="flex justify-between items-start gap-3">
+                            <div className="flex-1">
+                                <div className="flex flex-wrap gap-2 mb-2">
+                                    <Badge color="gray">{item.t}</Badge>
+                                    <Badge color={complexityColor}>{item.c}</Badge>
+                                    <span className="text-gray-400 dark:text-slate-500 text-xs mt-0.5 font-mono">#{item.id}</span>
+                                </div>
+                                <h3 className="text-slate-900 dark:text-slate-100 font-semibold text-lg leading-tight">
+                                    {item.q}
+                                </h3>
+                            </div>
+                            <button className="text-gray-400 dark:text-slate-500 hover:text-java-500 dark:hover:text-java-400 mt-1">
+                                {isOpen ? <IconChevronUp className="w-6 h-6" /> : <IconChevronDown className="w-6 h-6" />}
+                            </button>
+                        </div>
+                    </div>
+
+                    {isOpen && (
+                        <div className="px-4 pb-4 animate-fade-in border-t border-gray-100 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-900/50">
+                            <div className="pt-3 space-y-4">
+                                <div>
+                                    <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Answer</p>
+                                    <p className="text-slate-800 dark:text-slate-200 font-medium">{item.a}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Context</p>
+                                    <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{item.e}</p>
+                                </div>
+
+                                {/* AI TOOLBAR */}
+                                <div className="mt-4 pt-3 border-t border-gray-200 dark:border-slate-700">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <IconSparkles className="w-4 h-4 text-java-500" />
+                                        <h4 className="text-xs font-bold text-java-600 dark:text-java-400 uppercase tracking-wide">Gemini Assistant</h4>
+                                    </div>
+                                    
+                                    <div className="flex flex-wrap gap-2 mb-3">
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); triggerAI('simplify'); }}
+                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${aiState.mode === 'simplify' ? 'bg-java-100 dark:bg-java-900/40 text-java-800 dark:text-java-200 ring-1 ring-java-200 dark:ring-java-700' : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-java-600 dark:hover:text-java-300'}`}
+                                        >
+                                            <IconBulb className="w-3.5 h-3.5" />
+                                            Simplify (ELI5) ✨
+                                        </button>
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); triggerAI('code'); }}
+                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${aiState.mode === 'code' ? 'bg-java-100 dark:bg-java-900/40 text-java-800 dark:text-java-200 ring-1 ring-java-200 dark:ring-java-700' : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-java-600 dark:hover:text-java-300'}`}
+                                        >
+                                            <IconCode className="w-3.5 h-3.5" />
+                                            Show Code ✨
+                                        </button>
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); triggerAI('analogy'); }}
+                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${aiState.mode === 'analogy' ? 'bg-java-100 dark:bg-java-900/40 text-java-800 dark:text-java-200 ring-1 ring-java-200 dark:ring-java-700' : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-java-600 dark:hover:text-java-300'}`}
+                                        >
+                                            <span className="text-sm">💡</span>
+                                            Analogy ✨
+                                        </button>
+                                    </div>
+
+                                    <AIResponse 
+                                        content={aiState.content} 
+                                        loading={aiState.loading} 
+                                        error={aiState.error}
+                                        onRetry={handleRetry}
+                                    />
+                                </div>
+
+                                <div className="flex justify-end pt-2">
+                                    <button 
+                                        onClick={handleCopy}
+                                        className={`flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors ${copied ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20' : 'text-gray-400 dark:text-slate-500 hover:bg-gray-200 dark:hover:bg-slate-700 hover:text-gray-600 dark:hover:text-slate-300'}`}
+                                    >
+                                        {copied ? <IconCheck className="w-3 h-3"/> : <IconCopy className="w-3 h-3"/>}
+                                        {copied ? "Copied" : "Copy Q&A"}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [search, setSearch] = useState("");
+            const [topicFilter, setTopicFilter] = useState("All");
+            const [complexityFilter, setComplexityFilter] = useState("All");
+            const [openId, setOpenId] = useState(null);
+            const [showSettings, setShowSettings] = useState(false);
+            const [apiKey, setApiKey] = useState(() => localStorage.getItem("gemini_api_key") || "");
+            
+            const [darkMode, setDarkMode] = useState(() => {
+                if (localStorage.getItem("java_prep_theme") === "dark") return true;
+                if (localStorage.getItem("java_prep_theme") === "light") return false;
+                return window.matchMedia("(prefers-color-scheme: dark)").matches;
+            });
+
+            useEffect(() => {
+                if (darkMode) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('java_prep_theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('java_prep_theme', 'light');
+                }
+            }, [darkMode]);
+
+            const toggleTheme = () => setDarkMode(!darkMode);
+
+            const topics = ["All", ...new Set(QUESTIONS_DATA.map(q => q.t))].sort();
+            const complexities = ["All", "Beginner", "Intermediate", "Advanced", "Expert"];
+
+            const filteredData = useMemo(() => {
+                return QUESTIONS_DATA.filter(item => {
+                    const matchesSearch = 
+                        item.q.toLowerCase().includes(search.toLowerCase()) || 
+                        item.a.toLowerCase().includes(search.toLowerCase());
+                    const matchesTopic = topicFilter === "All" || item.t === topicFilter;
+                    const matchesComplexity = complexityFilter === "All" || item.c === complexityFilter;
+                    return matchesSearch && matchesTopic && matchesComplexity;
+                });
+            }, [search, topicFilter, complexityFilter]);
+
+            const handleToggle = (id) => {
+                setOpenId(openId === id ? null : id);
+            };
+
+            return (
+                <div className="min-h-screen pb-12 transition-colors duration-300 font-sans">
+                    <SettingsModal 
+                        isOpen={showSettings} 
+                        onClose={() => setShowSettings(false)} 
+                        apiKey={apiKey} 
+                        setApiKey={setApiKey} 
+                    />
+
+                    {/* Header */}
+                    <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white pt-8 pb-20 px-4 relative shadow-md">
+                         <div className="absolute top-4 right-4 flex items-center gap-3">
+                            <button
+                                onClick={toggleTheme}
+                                className="p-2 bg-white/10 hover:bg-white/20 rounded-full text-amber-300 hover:text-amber-200 transition-colors backdrop-blur-sm"
+                                title="Toggle Theme"
+                            >
+                                {darkMode ? <IconSun className="w-5 h-5" /> : <IconMoon className="w-5 h-5" />}
+                            </button>
+                            <button 
+                                onClick={() => setShowSettings(true)}
+                                className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors backdrop-blur-sm"
+                            >
+                                <IconSettings className="w-4 h-4" />
+                                <span className="hidden sm:inline">Settings</span>
+                            </button>
+                        </div>
+                        <div className="max-w-4xl mx-auto text-center">
+                            <div className="flex justify-center mb-3">
+                                <div className="bg-orange-500/20 p-3 rounded-full">
+                                    <IconCoffee className="w-10 h-10 text-orange-500" />
+                                </div>
+                            </div>
+                            <h1 className="text-3xl md:text-4xl font-extrabold mb-3 tracking-tight">
+                                Java Interview Prep
+                            </h1>
+                            <p className="text-slate-300 text-sm md:text-base max-w-lg mx-auto">
+                                100 Essential Java Questions tailored for <span className="text-orange-400 font-semibold">Selenium Automation Engineers</span>.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <main className="max-w-4xl mx-auto px-4 -mt-12 relative z-10">
+                        
+                        {/* Filters */}
+                        <div className="bg-white dark:bg-slate-850 rounded-xl shadow-lg p-4 md:p-6 mb-6 border border-gray-100 dark:border-slate-700">
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                                <div className="md:col-span-6 relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <IconSearch className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        placeholder="Search topics, keywords..."
+                                        className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-java-500 focus:border-transparent sm:text-sm"
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                    />
+                                </div>
+                                
+                                <div className="md:col-span-3">
+                                    <div className="relative">
+                                        <select
+                                            className="block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-java-500 focus:border-transparent sm:text-sm rounded-lg appearance-none cursor-pointer"
+                                            value={topicFilter}
+                                            onChange={(e) => setTopicFilter(e.target.value)}
+                                        >
+                                            {topics.map(t => <option key={t} value={t}>{t === 'All' ? 'All Topics' : t}</option>)}
+                                        </select>
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                            <IconFilter className="h-4 w-4" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="md:col-span-3">
+                                    <div className="relative">
+                                        <select
+                                            className="block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-java-500 focus:border-transparent sm:text-sm rounded-lg appearance-none cursor-pointer"
+                                            value={complexityFilter}
+                                            onChange={(e) => setComplexityFilter(e.target.value)}
+                                        >
+                                            <option value="All">All Levels</option>
+                                            {complexities.filter(c => c !== "All").map(c => (
+                                                <option key={c} value={c}>{c}</option>
+                                            ))}
+                                        </select>
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                            <IconChevronDown className="h-4 w-4" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* List Status */}
+                        <div className="flex justify-between items-center mb-4 text-sm text-slate-500 dark:text-slate-400 px-1">
+                            <span>Showing {filteredData.length} questions</span>
+                            {filteredData.length === 0 && <span className="text-red-500">No results found.</span>}
+                        </div>
+
+                        {/* Cards */}
+                        <div className="space-y-3">
+                            {filteredData.map(item => (
+                                <QuestionCard 
+                                    key={item.id} 
+                                    item={item} 
+                                    isOpen={openId === item.id}
+                                    onToggle={() => handleToggle(item.id)}
+                                    apiKey={apiKey}
+                                    openSettings={() => setShowSettings(true)}
+                                />
+                            ))}
+                        </div>
+                    </main>
+
+                    <footer className="text-center text-slate-400 dark:text-slate-600 text-xs py-10 mt-8">
+                        <p>Built for Selenium SDETs • Powered by Gemini AI</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
